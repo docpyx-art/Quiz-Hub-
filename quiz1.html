@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vocabulary Quiz – Set 1 Story Mobile</title>
+<title>Vocabulary Quiz 1 – Fill in the Blanks</title>
 
 <style>
 body {
@@ -78,10 +78,9 @@ select {
 
 <body>
 
-<h3>Fill in the blanks (choose the correct word)</h3>
+<h3>Vocabulary Quiz 1 – Fill in the Blanks</h3>
 
 <div>
-
 <span class="sentence">
 The explorer’s journey through the dense forest was full of (false)
 <select data-answer="spurious">
@@ -165,13 +164,25 @@ of fruits back at the village. His journey was (disconnected)
 </select>
 at times, but it taught him lessons he would never forget.
 </span>
-
 </div>
 
 <button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
 <div id="result"></div>
 
 <script>
+/* 🔀 RANDOMIZE DROPDOWN OPTIONS ON LOAD */
+function shuffleOptions(select) {
+  const opts = Array.from(select.options).slice(1);
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+  opts.forEach(o => select.appendChild(o));
+}
+
+document.querySelectorAll("select[data-answer]").forEach(shuffleOptions);
+
+/* ✅ EXISTING CHECK LOGIC – UNCHANGED */
 function checkAnswers() {
   let score = 0;
   let total = 0;
