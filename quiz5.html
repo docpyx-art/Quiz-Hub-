@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocabulary Quiz 5 – Fill in the Blanks</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 30px auto;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.sentence {
+  display: inline;
+  word-wrap: break-word;
+}
+
+select {
+  margin: 0 4px;
+  padding: 5px 4px;
+  font-size: 16px;
+  min-width: 110px;
+}
+
+.correct {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.wrong {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+#checkBtn {
+  display: block;
+  margin: 25px auto;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+#result {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+    margin: 15px;
+  }
+
+  select {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 3px 4px;
+    margin: 0 2px;
+    min-width: 90px;
+  }
+
+  #checkBtn {
+    width: 100%;
+    font-size: 20px;
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Vocabulary Quiz 5 – Fill in the Blanks</h3>
+
+<div>
+<span class="sentence">
+The new policy had far-reaching consequences (effects)
+<select data-answer="ramifications">
+  <option value="">---</option>
+  <option>ramifications</option>
+  <option>truncheons</option>
+  <option>heresies</option>
+  <option>compendium</option>
+</select>
+that the administration had not fully anticipated. During the protest, the police advanced with (batons)
+<select data-answer="truncheons">
+  <option value="">---</option>
+  <option>truncheons</option>
+  <option>aureole</option>
+  <option>urbane</option>
+  <option>perverse</option>
+</select>
+, creating panic rather than restoring order. Much of the government’s explanation remained (unclear)
+<select data-answer="nebulous">
+  <option value="">---</option>
+  <option>nebulous</option>
+  <option>bigoted</option>
+  <option>clandestine</option>
+  <option>compendium</option>
+</select>
+, leaving citizens confused. Some officials made (prejudiced)
+<select data-answer="bigoted">
+  <option value="">---</option>
+  <option>bigoted</option>
+  <option>urbane</option>
+  <option>nebulous</option>
+  <option>heresies</option>
+</select>
+remarks, while a few genuinely (polite and refined)
+<select data-answer="urbane">
+  <option value="">---</option>
+  <option>urbane</option>
+  <option>perverse</option>
+  <option>ramifications</option>
+  <option>truncheons</option>
+</select>
+leaders tried to calm tensions. Reformers who challenged orthodox beliefs were dismissed as (false doctrines)
+<select data-answer="heresies">
+  <option value="">---</option>
+  <option>heresies</option>
+  <option>aureole</option>
+  <option>compendium</option>
+  <option>clandestine</option>
+</select>
+, even though history later vindicated them. A moral (glow or halo)
+<select data-answer="aureole">
+  <option value="">---</option>
+  <option>aureole</option>
+  <option>urbane</option>
+  <option>bigoted</option>
+  <option>perverse</option>
+</select>
+surrounded those who spoke courageously, and their speeches were preserved in a (collection or summary)
+<select data-answer="compendium">
+  <option value="">---</option>
+  <option>compendium</option>
+  <option>ramifications</option>
+  <option>nebulous</option>
+  <option>truncheons</option>
+</select>
+of writings. However, a small group took (twisted)
+<select data-answer="perverse">
+  <option value="">---</option>
+  <option>perverse</option>
+  <option>urbane</option>
+  <option>aureole</option>
+  <option>bigoted</option>
+</select>
+pleasure in spreading unrest through (secret)
+<select data-answer="clandestine">
+  <option value="">---</option>
+  <option>clandestine</option>
+  <option>nebulous</option>
+  <option>heresies</option>
+  <option>compendium</option>
+</select>
+meetings.
+</span>
+</div>
+
+<button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+<div id="result"></div>
+
+<script>
+/* RANDOMIZE OPTIONS ON LOAD */
+document.querySelectorAll("select").forEach(select => {
+  const options = Array.from(select.options).slice(1);
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  options.forEach(opt => select.appendChild(opt));
+});
+
+function checkAnswers() {
+  let score = 0;
+  let total = 0;
+
+  document.querySelectorAll("select[data-answer]").forEach(sel => {
+    total++;
+    if (sel.value.trim() === sel.dataset.answer) {
+      sel.className = "correct";
+      score++;
+    } else {
+      sel.className = "wrong";
+    }
+  });
+
+  document.getElementById("result").innerText =
+    "Score: " + score + " / " + total;
+}
+</script>
+
+<div style="text-align:center; margin-bottom:20px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #1a73e8;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    display: inline-block;
+    transition: 0.3s;
+  ">⬅ Back to Index</a>
+</div>
+
+</body>
+</html>
