@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary Quiz 10 – Fill in the Blanks</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 30px auto;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.sentence {
+  display: inline;
+  word-wrap: break-word;
+}
+
+select {
+  margin: 0 4px;
+  padding: 5px 4px;
+  font-size: 16px;
+  min-width: 120px;
+}
+
+.correct {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.wrong {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+#checkBtn {
+  display: block;
+  margin: 25px auto;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+#result {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+/* Mobile Optimization */
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+    margin: 15px;
+  }
+
+  select {
+    font-size: 15px;
+    padding: 3px 4px;
+    min-width: 95px;
+  }
+
+  #checkBtn {
+    font-size: 20px;
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Vocabulary Quiz 10 – Fill in the Blanks</h3>
+
+<!-- BACK TO INDEX (TOP) -->
+<div style="margin-bottom:15px;">
+  <a href="index.html" style="
+    text-decoration:none;
+    color:#1a73e8;
+    font-size:16px;
+    font-weight:bold;
+  ">⬅ Back to Index</a>
+</div>
+
+<div>
+<span class="sentence">
+The committee introduced clear guidelines to (prevent, avoid)
+<select data-answer="obviate">
+  <option value="">---</option>
+  <option>obviate</option>
+  <option>dissent</option>
+  <option>subsume</option>
+  <option>inhibit</option>
+</select>
+future misunderstandings, though a few members still expressed (disagreement, opposition)
+<select data-answer="dissent">
+  <option value="">---</option>
+  <option>dissent</option>
+  <option>rancour</option>
+  <option>bombast</option>
+  <option>deference</option>
+</select>
+during the discussion. Over time, individual concerns were (absorb, include)
+<select data-answer="subsume">
+  <option value="">---</option>
+  <option>subsume</option>
+  <option>abase</option>
+  <option>ornamental</option>
+  <option>recant</option>
+</select>
+under a broader policy framework, ensuring consistency in decision-making. However, one senior official chose to (humiliate, degrade)
+<select data-answer="abase">
+  <option value="">---</option>
+  <option>abase</option>
+  <option>ornamental</option>
+  <option>rancour</option>
+  <option>inhibit</option>
+</select>
+himself publicly, only to later (withdraw, take back)
+<select data-answer="recant">
+  <option value="">---</option>
+  <option>recant</option>
+  <option>dissent</option>
+  <option>bombast</option>
+  <option>subsume</option>
+</select>
+his earlier statements. The meeting room, decorated with (decorative, showy)
+<select data-answer="ornamental">
+  <option value="">---</option>
+  <option>ornamental</option>
+  <option>deference</option>
+  <option>abase</option>
+  <option>inhibit</option>
+</select>
+elements, contrasted sharply with the (bitterness, resentment)
+<select data-answer="rancour">
+  <option value="">---</option>
+  <option>rancour</option>
+  <option>bombast</option>
+  <option>subsume</option>
+  <option>dissent</option>
+</select>
+felt by some participants. Despite moments of exaggerated (grandiose language, inflated speech)
+<select data-answer="bombast">
+  <option value="">---</option>
+  <option>bombast</option>
+  <option>ornamental</option>
+  <option>recant</option>
+  <option>rancour</option>
+</select>,
+junior members spoke with respectful (respect, submission)
+<select data-answer="deference">
+  <option value="">---</option>
+  <option>deference</option>
+  <option>dissent</option>
+  <option>abase</option>
+  <option>subsume</option>
+</select>
+toward their seniors, careful not to (restrain, hinder)
+<select data-answer="inhibit">
+  <option value="">---</option>
+  <option>inhibit</option>
+  <option>ornamental</option>
+  <option>bombast</option>
+  <option>recant</option>
+</select>
+open dialogue.
+</span>
+</div>
+
+<button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+<div id="result"></div>
+
+<!-- BACK TO INDEX (BOTTOM) -->
+<div style="margin-top:30px; text-align:center;">
+  <a href="index.html" style="
+    display:inline-block;
+    background:#1a73e8;
+    color:#ffffff;
+    padding:12px 22px;
+    text-decoration:none;
+    font-size:16px;
+    font-weight:bold;
+    border-radius:6px;
+  ">⬅ Back to Index</a>
+</div>
+
+<!-- SHUFFLE OPTIONS ON LOAD -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select").forEach(select => {
+    const placeholder = select.options[0];
+    const options = Array.from(select.options).slice(1);
+
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    select.innerHTML = "";
+    select.appendChild(placeholder);
+    options.forEach(opt => select.appendChild(opt));
+  });
+});
+
+function checkAnswers() {
+  let score = 0;
+  let total = 0;
+
+  document.querySelectorAll("select[data-answer]").forEach(sel => {
+    total++;
+    if (sel.value === sel.dataset.answer) {
+      sel.className = "correct";
+      score++;
+    } else {
+      sel.className = "wrong";
+    }
+  });
+
+  document.getElementById("result").innerText =
+    "Score: " + score + " / " + total;
+}
+</script>
+
+</body>
+</html>

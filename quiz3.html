@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vocabulary Quiz 3 – Fill in the Blanks</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 30px auto;
+  font-size: 18px;
+  line-height: 2;
+}
+
+.sentence {
+  display: inline;
+  word-wrap: break-word;
+}
+
+select {
+  margin: 0 4px;
+  padding: 5px 4px;
+  font-size: 16px;
+  min-width: 120px;
+}
+
+.correct {
+  border: 2px solid green;
+  background-color: #eaffea;
+}
+
+.wrong {
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+#checkBtn {
+  display: block;
+  margin: 25px auto;
+  padding: 14px;
+  font-size: 18px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 300px;
+}
+
+#result {
+  margin-top: 18px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+@media (max-width: 600px) {
+  body {
+    font-size: 20px;
+    margin: 15px;
+  }
+
+  select {
+    display: inline-block;
+    width: auto;
+    font-size: 15px;
+    padding: 3px 4px;
+    margin: 0 2px;
+    min-width: 90px;
+  }
+
+  #checkBtn {
+    width: 100%;
+    font-size: 20px;
+    padding: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Vocabulary Quiz 3 – Fill in the Blanks</h3>
+
+<!-- BACK TO INDEX (Top) -->
+<div style="margin-bottom:15px;">
+  <a href="index.html" style="
+    text-decoration:none;
+    color:#1a73e8;
+    font-size:16px;
+    font-weight:bold;
+  ">⬅ Back to Index</a>
+</div>
+
+<p class="sentence">
+In the small town of Rivermere, life had been generally (similar)
+<select data-answer="homogenous">
+  <option value="">---</option>
+  <option>homogenous</option>
+  <option>tenuous</option>
+  <option>contentious</option>
+  <option>reprieve</option>
+</select>
+with families following similar routines, yet beneath this calm surface a (argumentative)
+<select data-answer="contentious">
+  <option value="">---</option>
+  <option>contentious</option>
+  <option>tenuous</option>
+  <option>ameliorate</option>
+  <option>epitomising</option>
+</select>
+debate had arisen over the town’s aging bridge. Mayor Thompson sought to (improve)
+<select data-answer="ameliorate">
+  <option value="">---</option>
+  <option>ameliorate</option>
+  <option>postulate</option>
+  <option>reprieve</option>
+  <option>epitomising</option>
+</select>
+the situation by calling a town meeting, and engineers (suggested)
+<select data-answer="postulated">
+  <option value="">---</option>
+  <option>postulated</option>
+  <option>tenuous</option>
+  <option>redressing</option>
+  <option>precluding</option>
+</select>
+that continued neglect would only (worsen)
+<select data-answer="exacerbate">
+  <option value="">---</option>
+  <option>exacerbate</option>
+  <option>reprieve</option>
+  <option>epitomising</option>
+  <option>ameliorate</option>
+</select>
+the risks. Arguments grew (weak)
+<select data-answer="tenuous">
+  <option value="">---</option>
+  <option>tenuous</option>
+  <option>homogenous</option>
+  <option>contentious</option>
+  <option>redressing</option>
+</select>
+as neighbors accused each other of negligence, until amid the debate a local historian stood up, (symbolizing)
+<select data-answer="epitomising">
+  <option value="">---</option>
+  <option>epitomising</option>
+  <option>reprieve</option>
+  <option>precluding</option>
+  <option>ameliorate</option>
+</select>
+patience and reason. She suggested a plan (correcting)
+<select data-answer="redressing">
+  <option value="">---</option>
+  <option>redressing</option>
+  <option>tenuous</option>
+  <option>contentious</option>
+  <option>homogenous</option>
+</select>
+past mistakes while providing a temporary (relief)
+<select data-answer="reprieve">
+  <option value="">---</option>
+  <option>reprieve</option>
+  <option>exacerbating</option>
+  <option>precluding</option>
+  <option>epitomising</option>
+</select>
+for pedestrians. This careful plan prevented (blocking)
+<select data-answer="precluding">
+  <option value="">---</option>
+  <option>precluding</option>
+  <option>ameliorate</option>
+  <option>epitomising</option>
+  <option>tenuous</option>
+</select>
+any further hazards, and the town learned that even the most (argumentative)
+<select data-answer="contentious">
+  <option value="">---</option>
+  <option>contentious</option>
+  <option>homogenous</option>
+  <option>reprieve</option>
+  <option>redressing</option>
+</select>
+situations could be resolved with dialogue.
+</p>
+
+<button id="checkBtn" onclick="checkAnswers()">Check Answers</button>
+<div id="result"></div>
+
+<script>
+function checkAnswers() {
+  let score = 0;
+  let total = 0;
+
+  document.querySelectorAll("select[data-answer]").forEach(sel => {
+    total++;
+    if (sel.value.trim() === sel.dataset.answer) {
+      sel.className = "correct";
+      score++;
+    } else {
+      sel.className = "wrong";
+    }
+  });
+
+  document.getElementById("result").innerText =
+    "Score: " + score + " / " + total;
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("select[data-answer]").forEach(select => {
+    const placeholder = select.options[0]; // keeps ---
+    const options = Array.from(select.options).slice(1);
+
+    // Fisher–Yates shuffle
+    for (let i = options.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [options[i], options[j]] = [options[j], options[i]];
+    }
+
+    // rebuild dropdown
+    select.innerHTML = "";
+    select.appendChild(placeholder);
+    options.forEach(opt => select.appendChild(opt));
+  });
+});
+</script>
+
+
+<!-- BACK TO INDEX (Bottom) -->
+<div style="text-align:center; margin-top:25px; margin-bottom:20px;">
+  <a href="index.html" style="
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #1a73e8;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    display: inline-block;
+    transition: 0.3s;
+  ">⬅ Back to Index</a>
+</div>
+
+</body>
+</html>
