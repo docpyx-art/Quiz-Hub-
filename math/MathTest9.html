@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Math – Test 9</title>
+
+<!-- MathJax (Computer Modern-like) -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(','\\)'], ['$', '$']],
+      displayMath: [['\\[','\\]']]
+    },
+    options: {
+      skipHtmlTags: ['script','noscript','style','textarea','pre','code']
+    },
+    chtml: {
+      scale: 1.25   /* ← THIS line controls math size */
+    }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#fff; }
+
+.top-bar { padding:12px 20px; border-bottom:1px solid #ccc; font-weight:bold; }
+
+/* Container: single column layout for Math test */
+.container { 
+  display:flex; 
+  flex-direction:column; 
+  flex-grow:1; 
+  padding:20px; 
+  padding-bottom:150px; /* prevents bottom bar hiding options */
+}
+
+.passage { font-size:16px; line-height:1.6; white-space:pre-wrap; margin-bottom:20px; }
+#stem { margin-bottom:6px; }
+
+/* --- FIXED QBOX SIZE WITHOUT CHANGING OTHER STYLES --- */
+.qbox {
+  display:inline-block;
+  align-self:flex-start;
+  padding:4px 8px;
+  width:auto;
+  min-width:0;
+  text-align:center;
+  border:2px solid #000;
+  border-radius:4px;
+  font-weight:bold;
+  font-size:16px;
+  margin-bottom:10px;
+}
+
+.options label { display:block; margin:10px 0; padding:6px; cursor:pointer; border-radius:4px; }
+.correct { background:#d4edda; }
+.incorrect { background:#f8d7da; }
+
+/* SPR input */
+.spr-wrap { margin-top:10px; }
+.spr-input {
+  width:220px;
+  max-width:100%;
+  padding:8px 10px;
+  font-size:16px;
+  border:1px solid #333;
+  border-radius:4px;
+}
+.spr-hint { margin-top:8px; font-size:14px; }
+
+/* Bottom bar fixed at bottom */
+.bottom-bar { 
+  display:flex; 
+  justify-content:flex-end; 
+  align-items:center; 
+  width:100%; 
+  background:#2f3e46; 
+  padding:10px 20px; 
+  position:fixed; 
+  bottom:0; left:0; 
+  box-sizing:border-box; 
+  color:#fff; 
+  gap:10px; 
+  z-index:20;
+}
+
+button { padding:9px 20px; border:none; cursor:pointer; border-radius:4px; color:#fff; font-weight:bold; }
+.btn-answer { background:#3a5a98; }
+.btn-nav { background:#556d98; }
+
+.qpanelCollapsed { 
+  position:fixed; 
+  bottom:0; 
+  left:50%; 
+  transform:translateX(-50%); 
+  padding:6px 12px; 
+  cursor:pointer; 
+  background:#ff6f61; 
+  color:#fff; 
+  border-radius:4px; 
+  font-weight:bold; 
+  display:flex; 
+  align-items:center; 
+  z-index:21; 
+  font-size:13px;
+}
+
+.qpanelExpanded { 
+  display:none; 
+  position:fixed; 
+  bottom:30px; 
+  left:50%; 
+  transform:translateX(-50%); 
+  padding:10px; 
+  border-radius:6px; 
+  background:#1a1a1a; 
+  color:#fff; 
+  max-width:800px; 
+  overflow-y:auto; 
+  font-size:14px; 
+  text-align:center; 
+  z-index:20; 
+  max-height:300px;
+}
+
+.qgrid { display:grid; grid-template-columns:repeat(8,1fr); gap:6px; justify-content:center; margin-top:5px; }
+.qnum-box { padding:8px; text-align:center; cursor:pointer; border-radius:4px; background:#333; color:#fff; font-weight:bold; }
+.qnum-box.attempted { background:#ff6f61; color:#fff; }
+.qnum-box:hover { opacity:0.8; }
+
+/* MOBILE FRIENDLY */
+@media (max-width: 768px) {
+  .passage { font-size:15px; margin-bottom:15px; }
+  #stem { font-size:15px; margin-bottom:10px; }
+  #options label { font-size:14px; }
+  .bottom-bar { flex-direction:column; gap:8px; }
+  .btn-answer, .btn-nav { width:100%; text-align:center; }
+  .qpanelCollapsed { font-size:12px; padding:5px 10px; }
+  .qpanelExpanded { max-height:250px; font-size:13px; padding:8px; }
+  .qgrid { grid-template-columns:repeat(4,1fr); gap:4px; }
+  .qnum-box { padding:6px; font-size:12px; }
+  img { max-width:100%; height:auto; }
+  .container { padding-bottom:190px; }
+}
+
+@media only screen and (max-width: 600px) {
+  .bottom-bar { flex-direction:column; align-items:stretch; gap:8px; }
+  #qpanelCollapsed { left:10px; bottom:80px; transform:none; font-size:12px; }
+  #qpanelExpanded { left:10px; bottom:120px; transform:none; max-width:calc(100% - 20px); font-size:13px; max-height:250px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Calculator button -->
+<button id="openCalculator" 
+        style="position:absolute; top:10px; right:10px;
+               padding:6px 12px; font-size:14px; border-radius:4px;
+               border:1px solid #0077cc; background:#fff; color:#0077cc;
+               cursor:pointer; z-index:30;">
+  Calculator
+</button>
+
+<div class="top-bar">Math – Test 9</div>
+
+<div class="container">
+  <div id="qnumBox" class="qbox"></div>
+  <div id="passage" class="passage"></div>
+  <div id="stem"></div>
+  <div id="options" class="options"></div>
+</div>
+
+<div class="bottom-bar">
+  <button id="answerBtn" class="btn-answer">Show Correct Answer</button>
+  <button id="prevBtn" class="btn-nav">Previous</button>
+  <button id="nextBtn" class="btn-nav">Next</button>
+  <button id="reviewBtn" class="btn-nav" style="background:#28a745;">Go to Review</button>
+</div>
+
+<div id="qpanel">
+  <div id="qpanelCollapsed" class="qpanelCollapsed">
+    <span id="currentQuestionLabel">Question</span>
+    <span id="toggleArrow" style="margin-left:6px;">▲</span>
+  </div>
+  <div id="qpanelExpanded" class="qpanelExpanded">
+    <div id="qgrid" class="qgrid"></div>
+  </div>
+</div>
+
+<script>
+document.getElementById('openCalculator').addEventListener('click', function() {
+  window.open(
+    'https://www.desmos.com/testing/collegeboard/graphing',
+    'CalculatorWindow',
+    'width=900,height=600,top=100,left=100,resizable=yes,scrollbars=yes'
+  );
+});
+
+/* ✅ Important: typeset NEWLY inserted LaTeX every time */
+function typesetMath() {
+  if (window.MathJax && MathJax.typesetPromise) {
+    const nodes = [document.getElementById('passage'), document.getElementById('options')];
+    MathJax.typesetClear(nodes);
+    MathJax.typesetPromise(nodes);
+  }
+}
+
+// ==== QUESTIONS (LaTeX inline with \( \)) ====
+const questions = [
+
+  {
+    num: 267,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(2n+6=14\\)
+      </div>
+      A tree had a height of 6 feet when it was planted. The equation above can be used to find how many years \\(n\\) it took the tree to reach a height of 14 feet. Which of the following is the best interpretation of the number 2 in this context?
+    `,
+    stem: "",
+    options: {
+      A: "The number of years it took the tree to double its height",
+      B: "The average number of feet that the tree grew per year",
+      C: "The height, in feet, of the tree when the tree was 1 year old",
+      D: "The average number of years it takes similar trees to grow 14 feet"
+    },
+    answer: "B",
+    img: null
+  },
+
+  {
+    num: 268,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(2x+16=a(x+8)\\)
+      </div>
+      In the given equation, \\(a\\) is a constant. If the equation has infinitely many solutions, what is the value of \\(a\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "2",
+    img: null
+  },
+
+  {
+    num: 269,
+    passage: `
+      In the figure shown, triangle \\(CAE\\) is similar to triangle \\(CBD\\). The measure of angle \\(CBD\\) is \\(57^\\circ\\), and \\(AE=26(BD)\\). What is the measure of angle \\(CAE\\)?
+    `,
+    stem: "",
+    options: {
+      A: `\\((26\\cdot57)^\\circ\\)`,
+      B: `\\((26+57)^\\circ\\)`,
+      C: `\\(57^\\circ\\)`,
+      D: `\\(26^\\circ\\)`
+    },
+    answer: "C",
+    img: "269.png"
+  },
+
+  {
+    num: 270,
+    passage: `
+      A circle has a circumference of \\(31\\pi\\) centimeters. What is the diameter, in centimeters, of the circle?
+    `,
+    stem: "",
+    options: null,
+    answer: "31",
+    img: null
+  },
+
+  {
+    num: 271,
+    passage: `
+      During the first month of sales, a company sold 1,300,000 units of a certain type of smartphone. During the same month, 15% of the units sold were returned. If sales and the return rate remain the same for each of the next 5 months, about how many units of this smartphone will be returned to the company during this 6-month period?
+    `,
+    stem: "",
+    options: {
+      A: "195,000",
+      B: "975,000",
+      C: "1,170,000",
+      D: "6,630,000"
+    },
+    answer: "C",
+    img: null
+  },
+
+  {
+    num: 272,
+    passage: `
+      Which of the following is closest to the slope of the line of best fit shown?
+    `,
+    stem: "",
+    options: {
+      A: "-2.4",
+      B: "-0.8",
+      C: "0.8",
+      D: "2.4"
+    },
+    answer: "B",
+    img: "272.png"
+  },
+
+  {
+    num: 273,
+    passage: `
+      A rectangle has a length of \\(x\\) units and a width of \\((x-15)\\) units. If the rectangle has an area of 76 square units, what is the value of \\(x\\)?
+    `,
+    stem: "",
+    options: {
+      A: "4",
+      B: "19",
+      C: "23",
+      D: "76"
+    },
+    answer: "B",
+    img: null
+  },
+
+  {
+    num: 274,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(y=x^2-4x+4\\)<br>
+        \\(y=4-x\\)
+      </div>
+      If the ordered pair \\((x,y)\\) satisfies the system of equations above, what is one possible value of \\(x\\)?
+    `,
+    stem: "",
+    options: null,
+   answer: ["0", "3"],
+
+    img: null
+  },
+
+  {
+    num: 275,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(4x-6y=10y+2\\)<br>
+        \\(ty=\\frac{1}{2}+2x\\)
+      </div>
+      In the given system of equations, \\(t\\) is a constant. If the system has no solution, what is the value of \\(t\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: "8",
+    img: null
+  },
+
+  {
+    num: 276,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(F(x)=\\frac{9}{5}(x-273.15)+32\\)
+      </div>
+      The function \\(F\\) gives the temperature, in degrees Fahrenheit, that corresponds to a temperature of \\(x\\) kelvins. If a temperature increased by \\(9.10\\) kelvins, by how much did the temperature increase, in degrees Fahrenheit?
+    `,
+    stem: "",
+    options: {
+      A: "16.38",
+      B: "48.38",
+      C: "475.29",
+      D: "507.29"
+    },
+    answer: "A",
+    img: null
+  },
+
+  {
+    num: 277,
+    passage: `
+      In the figure above, what is the length of \\(\\overline{NQ}\\)?
+    `,
+    stem: "",
+    options: {
+      A: "2.2",
+      B: "2.3",
+      C: "2.4",
+      D: "2.5"
+    },
+    answer: "C",
+    img: "277.png"
+  },
+
+  {
+    num: 278,
+    passage: `
+      The equation \\((x+6)^2+(y+3)^2=121\\) defines a circle in the \\(xy\\)-plane. What is the radius of the circle?
+    `,
+    stem: "",
+    options: null,
+    answer: "11",
+    img: null
+  },
+
+  {
+    num: 279,
+    passage: `
+      If \\(\\frac{4a}{b}=6.7\\) and \\(\\frac{a}{bn}=26.8\\), what is the value of \\(n\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: ["0.0625", "1/16"],
+
+    img: null
+  },
+
+  {
+    num: 280,
+    passage: `
+      The results of two random samples of votes for a proposition are shown above. The samples were selected from the same population, and the margins of error were calculated using the same method. Which of the following is the most appropriate reason that the margin of error for sample A is greater than the margin of error for sample B?
+    `,
+    stem: "",
+    options: {
+      A: "Sample A had a smaller number of votes that could not be recorded.",
+      B: "Sample A had a higher percent of favorable responses.",
+      C: "Sample A had a larger sample size.",
+      D: "Sample A had a smaller sample size."
+    },
+    answer: "D",
+    img: "280.png"
+  },
+
+  {
+    num: 281,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(\\sqrt[5]{70n}(\\sqrt[6]{70n})^2\\)
+      </div>
+      For what value of \\(x\\) is the given expression equivalent to \\((70n)^{30x}\\), where \\(n>1\\)?
+    `,
+    stem: "",
+    options: null,
+    answer: ["4/225", ".0177", ".0178"],
+
+    img: null
+  },
+
+  {
+    num: 282,
+    passage: `
+      <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
+        \\(2x^2-2=2x+3\\)
+      </div>
+      Which of the following is a solution to the equation above?
+    `,
+    stem: "",
+    options: {
+      A: "2",
+      B: `\\(1-\\sqrt{11}\\)`,
+      C: `\\(\\frac{1}{2}+\\sqrt{11}\\)`,
+      D: `\\(\\frac{1+\\sqrt{11}}{2}\\)`
+    },
+    answer: "D",
+    img: null
+  }
+
+];
+
+// ==== EXISTING LOGIC ====
+let currentQ = 0;
+let answerShown = false;
+let attempted = Array(questions.length).fill(false);
+let userAnswers = Array(questions.length).fill(null);
+
+function loadQuestion() {
+  const q = questions[currentQ];
+
+  // passage + optional image
+  if (q.img) {
+    document.getElementById('passage').innerHTML = `
+      <img src="${q.img}" alt="Graph"
+           style="max-width:400px; width:100%; height:auto; display:block; margin-bottom:12px;">
+      ${q.passage}
+    `;
+  } else {
+    document.getElementById('passage').innerHTML = q.passage;
+  }
+
+  document.getElementById('qnumBox').innerText = `Q${q.num}`;
+  document.getElementById('stem').innerText = q.stem || "";
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  // MCQ
+  if (q.options) {
+    for (const [key, val] of Object.entries(q.options)) {
+      const lbl = document.createElement('label');
+      lbl.innerHTML = `<input type="radio" name="option" value="${key}"> ${key}. ${val}`;
+      const input = lbl.querySelector('input');
+
+      if (userAnswers[currentQ] === key) input.checked = true;
+
+      input.addEventListener('change', () => {
+        userAnswers[currentQ] = key;
+        attempted[currentQ] = true;
+        updateQpanel();
+      });
+
+      optionsDiv.appendChild(lbl);
+    }
+  } else {
+    // SPR (student-produced response)
+    const wrap = document.createElement('div');
+    wrap.className = 'spr-wrap';
+    wrap.innerHTML = `
+      <input id="sprInput" class="spr-input" type="text" inputmode="decimal" />
+      <div id="sprAnswerReveal" class="spr-hint"></div>
+    `;
+    optionsDiv.appendChild(wrap);
+
+    const sprInput = document.getElementById('sprInput');
+    if (userAnswers[currentQ] !== null) sprInput.value = userAnswers[currentQ];
+
+    sprInput.addEventListener('input', () => {
+      userAnswers[currentQ] = sprInput.value.trim();
+      attempted[currentQ] = userAnswers[currentQ].length > 0;
+      updateQpanel();
+    });
+  }
+
+  answerShown = false;
+  document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+  updateQpanel();
+
+  // ✅ re-typeset LaTeX after injecting HTML
+  typesetMath();
+}
+
+function toggleAnswer() {
+  const q = questions[currentQ];
+  const optionsDiv = document.getElementById('options');
+
+  if (!answerShown) {
+    // MCQ highlighting
+    if (q.options) {
+      for (const input of optionsDiv.querySelectorAll('input[type="radio"]')) {
+        input.parentNode.classList.remove('correct','incorrect');
+        if (input.value === q.answer) input.parentNode.classList.add('correct');
+        else input.parentNode.classList.add('incorrect');
+      }
+    } else {
+      // SPR reveal
+      const reveal = document.getElementById('sprAnswerReveal');
+      if (reveal) {
+        reveal.innerHTML = `<strong>Correct Answer:</strong> ${q.answer}`;
+      }
+    }
+
+    document.getElementById('answerBtn').innerText = 'Hide Correct Answer';
+    answerShown = true;
+  } else {
+    // remove highlights / hide reveal
+    if (q.options) {
+      for (const input of optionsDiv.querySelectorAll('input[type="radio"]')) {
+        input.parentNode.classList.remove('correct','incorrect');
+      }
+    } else {
+      const reveal = document.getElementById('sprAnswerReveal');
+      if (reveal) reveal.innerHTML = '';
+    }
+
+    document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+    answerShown = false;
+  }
+}
+
+document.getElementById('answerBtn').addEventListener('click', toggleAnswer);
+document.getElementById('prevBtn').addEventListener('click', () => { if (currentQ > 0) currentQ--; loadQuestion(); });
+document.getElementById('nextBtn').addEventListener('click', () => { if (currentQ < questions.length - 1) currentQ++; loadQuestion(); });
+
+const collapsed = document.getElementById('qpanelCollapsed');
+const expanded = document.getElementById('qpanelExpanded');
+collapsed.addEventListener('click', () => {
+  expanded.style.display = (expanded.style.display === 'block') ? 'none' : 'block';
+});
+
+function updateQpanel() {
+  const grid = document.getElementById('qgrid');
+  grid.innerHTML = '';
+  questions.forEach((q, i) => {
+    const b = document.createElement('div');
+    b.innerText = q.num;
+    b.className = 'qnum-box';
+    b.classList.toggle('attempted', attempted[i]);
+    b.addEventListener('click', () => { currentQ = i; loadQuestion(); expanded.style.display = 'none'; });
+    grid.appendChild(b);
+  });
+  document.getElementById('currentQuestionLabel').innerText = `Question ${questions[currentQ].num} of ${questions.length}`;
+}
+
+loadQuestion();
+
+// ==== REVIEW PAGE LOGIC ====
+document.getElementById('reviewBtn').addEventListener('click', () => {
+  const mainContent = document.querySelector('.container');
+  const bottomBar = document.querySelector('.bottom-bar');
+  const qpanel = document.getElementById('qpanel');
+
+  mainContent.style.display = 'none';
+  bottomBar.style.display = 'none';
+  qpanel.style.display = 'none';
+
+  let reviewDiv = document.getElementById('reviewPage');
+  if (!reviewDiv) {
+    reviewDiv = document.createElement('div');
+    reviewDiv.id = 'reviewPage';
+    reviewDiv.style.padding = '20px';
+    reviewDiv.style.maxWidth = '600px';
+    reviewDiv.style.margin = '0 auto';
+    document.body.appendChild(reviewDiv);
+  }
+  reviewDiv.style.display = 'block';
+  reviewDiv.innerHTML = '<h2>Review Questions</h2>';
+
+  // Score: MCQ exact match; SPR compare trimmed strings
+  const correctCount = userAnswers.filter((ans, idx) => {
+  const correct = questions[idx].answer;
+  const given = (ans ?? "").toString().trim();
+
+  if (!given) return false;
+
+  if (Array.isArray(correct)) {
+    return correct.map(x => x.toString().trim()).includes(given);
+  }
+  return given === (correct ?? "").toString().trim();
+}).length;
+
+  const totalCount = questions.length;
+  const scoreDiv = document.createElement('div');
+  scoreDiv.style.fontWeight = 'bold';
+  scoreDiv.style.marginBottom = '15px';
+  scoreDiv.innerText = `Score: ${correctCount} / ${totalCount}`;
+  reviewDiv.appendChild(scoreDiv);
+
+  const ul = document.createElement('ul');
+  ul.style.listStyle = 'none';
+  ul.style.padding = '0';
+  ul.style.display = 'flex';
+  ul.style.flexWrap = 'wrap';
+  ul.style.gap = '8px';
+
+  questions.forEach((q, i) => {
+    const li = document.createElement('li');
+    li.innerText = q.num;
+    li.style.padding = '8px 12px';
+    li.style.border = '1px solid #333';
+    li.style.borderRadius = '4px';
+    li.style.cursor = 'pointer';
+
+    const correct = q.answer;
+const given = (userAnswers[i] ?? "").toString().trim();
+
+if (!given) li.style.background = '#555';
+else if (
+  Array.isArray(correct)
+    ? correct.map(x => x.toString().trim()).includes(given)
+    : given === (correct ?? "").toString().trim()
+) li.style.background = '#28a745';
+else li.style.background = '#dc3545';
+
+    li.style.color = '#fff';
+
+    li.addEventListener('click', () => {
+      currentQ = i;
+      loadQuestion();
+      reviewDiv.style.display = 'none';
+      mainContent.style.display = 'flex';
+      bottomBar.style.display = 'flex';
+      qpanel.style.display = 'block';
+    });
+
+    ul.appendChild(li);
+  });
+
+  reviewDiv.appendChild(ul);
+
+  let backBtn = document.getElementById('backToTestBtn');
+  if (!backBtn) {
+    backBtn = document.createElement('button');
+    backBtn.id = 'backToTestBtn';
+    backBtn.innerText = 'Back to Test';
+    backBtn.style.background = '#556d98';
+    backBtn.style.color = '#fff';
+    backBtn.style.border = 'none';
+    backBtn.style.padding = '10px 20px';
+    backBtn.style.marginTop = '20px';
+    backBtn.style.borderRadius = '4px';
+    backBtn.style.cursor = 'pointer';
+    reviewDiv.appendChild(backBtn);
+  }
+  backBtn.onclick = () => {
+    reviewDiv.style.display = 'none';
+    mainContent.style.display = 'flex';
+    bottomBar.style.display = 'flex';
+    qpanel.style.display = 'block';
+  };
+});
+</script>
+
+</body>
+</html>
