@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Verbal – Set 11</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fff;
+  padding-bottom: 100px;
+}
+
+.top-bar {
+  padding: 12px 20px;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  flex-grow: 1;
+}
+
+.left, .right {
+  width: 50%;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.divider {
+  width: 1px;
+  background: #ccc;
+  height: calc(100vh - 60px);
+}
+
+/* ✅ TRUE LEFT ALIGN (no preserved indents) */
+.passage {
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: left;
+  white-space: normal;
+}
+
+#stem {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.options {
+  text-align: left;
+}
+
+.qbox {
+  padding: 6px 14px;
+  border: 2px solid #000;
+  display: inline-block;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.options label {
+  display: block;
+  margin: 10px 0;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.correct { background: #d4edda; }
+.incorrect { background: #f8d7da; }
+
+/* Bottom bar */
+.bottom-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  background: #2f3e46;
+  padding: 10px 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  color: #fff;
+  gap: 10px;
+}
+
+button {
+  padding: 9px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+}
+
+.btn-answer { background: #3a5a98; }
+.btn-nav { background: #556d98; }
+
+/* Question panel */
+.qpanelCollapsed {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  cursor: pointer;
+  background: #ff6f61;
+  color: #fff;
+  border-radius: 4px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  z-index: 11;
+  font-size: 13px;
+}
+
+.qpanelExpanded {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  border-radius: 6px;
+  background: #1a1a1a;
+  color: #fff;
+  max-width: 800px;
+  overflow-y: auto;
+  font-size: 14px;
+  text-align: center;
+  z-index: 10;
+  max-height: 300px;
+}
+
+.qgrid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.qnum-box {
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  background: #333;
+  color: #fff;
+  font-weight: bold;
+}
+
+.qnum-box.attempted { background: #ff6f61; }
+.qnum-box:hover { opacity: 0.8; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  body { padding-bottom: 180px; }
+  .container { flex-direction: column; }
+  .left, .right { width: 100%; padding: 15px; }
+  .divider { display: none; }
+
+  .bottom-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .btn-answer, .btn-nav {
+    width: 100%;
+    text-align: center;
+  }
+
+  .qpanelCollapsed {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+
+  .qpanelExpanded {
+    max-height: 250px;
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .qgrid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .qnum-box { padding: 6px; font-size: 12px; }
+
+  .passage { font-size: 15px; }
+  #stem { font-size: 15px; }
+  #options label { font-size: 14px; }
+
+  img { max-width: 100%; height: auto; }
+}
+
+@media only screen and (max-width: 600px) {
+  .container { flex-direction: column; }
+  .left, .right { width: 100%; padding: 20px; }
+  .divider { display: none; }
+
+  .bottom-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  #qpanelCollapsed { left: 10px; bottom: 80px; transform: none; font-size: 12px; }
+  #qpanelExpanded  { left: 10px; bottom: 120px; transform: none; max-width: calc(100% - 20px); font-size: 13px; max-height: 250px; }
+
+  .qgrid { grid-template-columns: repeat(4, 1fr); }
+  .qnum-box { padding: 6px; font-size: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">Verbal – Set 11</div>
+
+<div class="container">
+  <div class="left">
+    <div id="passage" class="passage"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="right">
+    <div id="qnumBox" class="qbox"></div>
+    <div id="stem"></div>
+    <div id="options" class="options"></div>
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <button id="answerBtn" class="btn-answer">Show Correct Answer</button>
+  <button id="prevBtn" class="btn-nav">Previous</button>
+  <button id="nextBtn" class="btn-nav">Next</button>
+  <button id="reviewBtn" class="btn-nav" style="background:#28a745;">Go to Review</button>
+</div>
+
+<div id="qpanel">
+  <div id="qpanelCollapsed" class="qpanelCollapsed">
+    <span id="currentQuestionLabel">Question 0 of 0</span>
+    <span id="toggleArrow" style="margin-left:6px;">▲</span>
+  </div>
+  <div id="qpanelExpanded" class="qpanelExpanded">
+    <div id="qgrid" class="qgrid"></div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    num: 331,
+    passage: `
+Vadamalai Elangovan and Ganapathi Marimuthu showed that high moonlight intensity inhibits the activity of the greater
+short-nosed fruit bat (Cynopterus sphinx), a result explicable in terms of benefits and costs: greater lunar intensity may
+not enable the bats to increase foraging success enough to offset the higher chance of detection by predatory owls or
+hawks. Most other nocturnal mammals respond to lunar intensity variations similarly to greater short-nosed fruit bats,
+but mongoose lemurs (Eulemur mongoz) display the opposite pattern, as their heavy reliance on visual foraging results in
+a different balance of reward and risk.
+`,
+    stem: `Which choice best describes the overall structure of the text?`,
+    options: {
+      A: `It discusses two different responses to the same natural phenomenon, explains why one of those responses occurs, and then suggests that the other response still needs to be explained.`,
+      B: `It describes and accounts for a finding, characterizes the finding as representative of a general pattern, and then describes and accounts for an exception to that pattern.`,
+      C: `It presents and explains a study result, indicates that the result is similar to the results of many other studies, and then attributes a conflicting study result to a difference in that study’s methods.`,
+      D: `It introduces an observation of a behavioral pattern, presents an explanation for the pattern, and then describes an exception to the pattern that casts doubt on that explanation.`
+    },
+    answer: "B",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 332,
+    passage: `
+During Rome’s republican period, which ended in the first century BCE, libraries were predominantly owned by wealthy
+individuals who tightly controlled access to their book collections. The first public library became available in Rome in 28
+BCE and was soon followed by one commissioned by Emperor Augustus. As modern scholar Fabio Fernandes notes,
+however, these two traditions aren’t as distinct as they seem, as both the emperor and the private library owners viewed
+their libraries as extensions of their personal patronage, just on vastly differing scales.
+`,
+    stem: `Which choice best states the main purpose of the text?`,
+    options: {
+      A: `To give a brief overview of public access to libraries throughout Rome’s republican period`,
+      B: `To contend that early imperial leaders in Rome wielded too much influence over libraries`,
+      C: `To assert that private and early public libraries in ancient Rome had an essential similarity`,
+      D: `To call into question the notion that private Roman libraries disappeared during the first century BCE`
+    },
+    answer: "C",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 333,
+    passage: `
+The following text is from Virginia Woolf’s 1919 novel <i>Night and Day</i>. The text describes a gathering of young artists and
+intellectuals.<br><br>
+One person after another rose, and, as with an ill-balanced axe, attempted to hew out his conception of art a little
+more clearly, and sat down with the feeling that, for some reason which he could not grasp, his strokes had gone
+awry. As they sat down they turned almost invariably to the person sitting next them, and rectified and continued
+what they had just said in public.
+`,
+    stem: `Which choice best describes the function of the underlined portions in the text as a whole?`,
+    options: {
+      A: `To demonstrate individuals’ puzzlement over the reputation of a certain artwork`,
+      B: `To highlight the physical effort involved in individuals’ construction of large-scale works of art`,
+      C: `To draw attention to individuals’ discontent with the group’s conversation about art`,
+      D: `To emphasize the extent of individuals’ struggles to articulate thoughts on art`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 334,
+    passage: `
+Stephen Hannock’s luminous landscape paintings are appealing to viewers but have elicited little commentary from
+contemporary critics, a phenomenon that may be due to the very fact that the paintings seem so ______. Many critics
+focus their attention on art that is cryptic or overtly challenging.
+`,
+    stem: `Which choice completes the text with the most logical and precise word or phrase?`,
+    options: {
+      A: `innovative`,
+      B: `subversive`,
+      C: `profound`,
+      D: `accessible`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 335,
+    passage: `
+While researching a topic, a student has taken the following notes:
+<br><br>
+• Some US reformers sought to improve society in the 1800s by building utopias.<br>
+• A utopia is a community intended to represent a perfect society based on a specific set of principles.<br>
+• One such community was Brook Farm near Boston, Massachusetts.<br>
+• It was founded in 1841 by writer George Ripley.<br>
+• Ripley wrote in a letter that his goal for Brook Farm was “to guarantee the highest mental freedom, by providing all with labor, adapted to their tastes and talents, and securing to them the fruits of their industry.”<br>
+`,
+    stem: `The student wants to explain the goal of Brook Farm using a quotation from George Ripley. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+    options: {
+      A: `In a letter, writer George Ripley explained his goal to “guarantee the highest mental freedom.”`,
+      B: `Utopias, such as Brook Farm, founded by George Ripley in 1841, were based on a specific set of principles intended to create a perfect society.`,
+      C: `Founded by George Ripley near Boston, Massachusetts, Brook Farm was part of a trend in the 1800s, when reformers in the United States built utopias.`,
+      D: `Established in 1841, Brook Farm was a utopian community created to “guarantee the highest mental freedom, by providing all with labor... [and] the fruits of their industry,” according to founder George Ripley.`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 336,
+    passage: `
+While researching a topic, a student has taken the following notes:
+<br><br>
+• In the early 1960s, the US had a strict national-origins quota system for immigrants.<br>
+• The number of new immigrants allowed from a country each year was based on how many people from that country lived in the US in 1890.<br>
+• This system favored immigrants from northern Europe.<br>
+• Almost 70% of slots were reserved for immigrants from Great Britain, Ireland, and Germany.<br>
+• The 1965 Hart-Celler Act abolished the national-origins quota system.<br>
+`,
+    stem: `The student wants to present the significance of the Hart-Celler Act to an audience unfamiliar with the history of US immigration. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+    options: {
+      A: `Almost 70% of slots were reserved for immigrants from Great Britain, Ireland, and Germany at the time the Hart-Celler Act was proposed.`,
+      B: `Prior to the Hart-Celler Act, new immigration quotas were based on how many people from each country lived in the US in 1890.`,
+      C: `The quota system in place in the early 1960s was abolished by the 1965 Hart-Celler Act.`,
+      D: `The 1965 Hart-Celler Act abolished the national-origins quota system, which favored immigrants from northern Europe.`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 337,
+    passage: `
+While researching a topic, a student has taken the following notes:
+<br><br>
+• Stars form in a galaxy when gravity causes a massive cloud of dust and gas to collapse.<br>
+• A galaxy in a phase of rapid star formation is called a starburst galaxy.<br>
+• Quenching is a process in which a galaxy loses star-forming gas.<br>
+• A galaxy that no longer forms stars is called a quenched galaxy.<br>
+• A quenched galaxy has entered the poststarburst phase.<br>
+`,
+    stem: `The student wants to explain what a quenched galaxy is. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
+    options: {
+      A: `Before quenching, a starburst galaxy will form stars at a rapid rate.`,
+      B: `When it becomes quenched, a starburst galaxy enters the poststarburst phase.`,
+      C: `Having entered the poststarburst phase, a quenched galaxy is one that no longer forms stars.`,
+      D: `A starburst galaxy will lose star-forming gas and eventually become quenched.`
+    },
+    answer: "C",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 338,
+    passage: `
+While researching a topic, a student has taken the following notes:
+<br><br>
+• Nissologists are scientists who study islands.<br>
+• Some nissologists define an island as any piece of land surrounded by water.<br>
+• Using that definition, they determined that Sweden has 221,000 islands.<br>
+• Other nissologists define an island as being 1 kilometer square, a certain distance from the mainland, and having at least 50 permanent residents.<br>
+• Using that definition, they determined that Sweden has 24 islands.<br>
+`,
+    stem: `The student wants to make and support a generalization about nissologists’ definition of an island. Which choice most effectively uses relevant information from the notes to accomplish these goals?`,
+    options: {
+      A: `The definition of an island as any piece of land surrounded by water is supported by some nissologists, scientists who study islands.`,
+      B: `Multiple counts of Sweden’s islands have been based on different definitions of an island.`,
+      C: `Based on a recent count, Sweden has a relatively small number of islands with at least 50 permanent residents.`,
+      D: `Nissologists’ different definitions can result in huge disparities in counts of islands, as the example of Sweden shows.`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 339,
+    passage: `
+German theater practitioner Bertolt Brecht (1898–1956) believed that theater should elicit an intellectual rather than an
+emotional response from audiences, provoking them to consider social and political realities that extend beyond the
+characters and events depicted onstage. Brecht’s influence can be seen in English playwright Caryl Churchill’s 1979 play
+<i>Cloud 9</i>: although the play sometimes invites empathetic reactions, it primarily works to engage audiences in an
+interrogation of patriarchy and colonialism, which it does by placing audiences at a distance, thereby encouraging them
+to ______
+`,
+    stem: `Which choice most logically completes the text?`,
+    options: {
+      A: `focus on the characters’ beliefs about social and political issues as revealed by the characters’ actions.`,
+      B: `reflect on social and political phenomena not directly related to patriarchy and colonialism.`,
+      C: `recognize pertinent social and political parallels between Germany during Brecht’s time and England at the time when Churchill was writing <i>Cloud 9</i>.`,
+      D: `be dispassionate as they think critically about the social and political questions raised by the play.`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 340,
+    passage: `
+For centuries, the widespread acknowledgment of the involvement of the cerebellum—a dense brain structure in
+vertebrates—in coordinating motor control in humans has hindered recognition of other possible functions of the
+structure. Neuroscience research from the last two decades now suggests that the cerebellum regulates emotion and
+social behavior, and recent research by Ilaria Carta and colleagues has identified a pathway connecting the cerebellum to
+a center for motivation and reward processing known as the ventral tegmental area (VTA).
+`,
+    stem: `Which choice best states the main idea of the text?`,
+    options: {
+      A: `The recent verification of a pathway between the VTA and the cerebellum confirms the cerebellum’s long-suspected role in motor coordination.`,
+      B: `Recent advances in the field of neuroscience have challenged widely accepted claims about the function of a pathway connecting the VTA and the cerebellum.`,
+      C: `The cerebellum has primarily been thought to regulate motor functioning, but in recent years neuroscience researchers have been uncovering additional functions.`,
+      D: `Technological limitations have historically hindered the study of the cerebellum, but the recent development of new technologies has led to greater insights into its functions.`
+    },
+    answer: "C",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 341,
+    passage: `
+To dye wool, Navajo (Diné) weaver Lillie Taylor uses plants and vegetables from Arizona, where she lives. For example,
+she achieved the deep reds and browns featured in her 2003 rug <i>In the Path of the Four Seasons</i> by using Arizona dock
+roots, drying and grinding them before mixing the powder with water to create a dye bath. To intensify the appearance of
+certain colors, Taylor also sometimes mixes in clay obtained from nearby soil.
+`,
+    stem: `Which choice best states the main idea of the text?`,
+    options: {
+      A: `Reds and browns are not commonly featured in most of Taylor’s rugs.`,
+      B: `Taylor draws on local resources in the approach she uses to dye wool.`,
+      C: `Taylor finds it difficult to locate Arizona dock root in the desert.`,
+      D: `<i>In the Path of the Four Seasons</i> is widely acclaimed for its many colors and innovative weaving techniques.`
+    },
+    answer: "B",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 342,
+    passage: `
+Dutch painters in the sixteenth and seventeenth centuries often showed tables filled with large wheels of cheese or
+carved shards of butter. Some art historians, noting that dairy products were a major component of the Dutch diet,
+interpret these depictions as reflections of everyday Dutch eating habits. However, a group of researchers recently
+reviewed hundreds of food-related paintings and found that lemons—which could only be acquired in the Netherlands at
+great cost, since they had to be imported from warmer climates—feature in Dutch paintings of the period more than three
+times as frequently as dairy products do, thereby casting doubt on the idea that ______
+`,
+    stem: `Which choice most logically completes the text?`,
+    options: {
+      A: `dairy products were a more significant component of the Dutch diet of the period than lemons were.`,
+      B: `food was a more popular subject among Dutch painters than it was among painters from other countries at the time.`,
+      C: `depictions of food in Dutch paintings of the period should be taken as realistic representations of Dutch eating habits.`,
+      D: `Dutch painters of the period may have depicted foods for symbolic reasons rather than to show what Dutch people typically ate.`
+    },
+    answer: "C",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 343,
+    passage: `
+Official measurements of the Mississippi River’s length vary: according to the US Geologic Survey, the river is 2,300 miles
+long, whereas the Environmental Protection Agency records its length as 2,320 miles. This disparity can be explained in
+part by the fact that rivers such as the Mississippi expand and contract as ______ sediment.
+`,
+    stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+    options: {
+      A: `they accumulate`,
+      B: `one accumulates`,
+      C: `it accumulates`,
+      D: `we accumulate`
+    },
+    answer: "A",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 344,
+    passage: `
+A conceptual artist and designer embraced by both the art world and the fashion ______ Mary Ping was chosen to curate
+the exhibition <i>Front Row: Chinese American Designers</i> for the Museum of Chinese in America.
+`,
+    stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+    options: {
+      A: `world`,
+      B: `world:`,
+      C: `world;`,
+      D: `world,`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 345,
+    passage: `
+Legal scholars James Melton and Tom Ginsburg’s analysis of de jure judicial independence and its growth over decades
+______ six constitutional features that enhance such independence, including judicial tenure and selection procedure.
+Albania’s constitution contains five of these features.
+`,
+    stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+    options: {
+      A: `are identifying`,
+      B: `identify`,
+      C: `have identified`,
+      D: `identifies`
+    },
+    answer: "D",
+    img: null,
+    stemImg: null
+  },
+
+  {
+    num: 346,
+    passage: `
+The present-day city of Dushanbe, Tajikistan, was for years the capital of the Tajik Autonomous Soviet Socialist Republic,
+one of many nominally autonomous republics within the Soviet Union. Like ______ peer autonomous Soviet socialist
+republics, the Tajik Republic was established along ethnolinguistic lines: most of the republic’s residents spoke Persian.
+`,
+    stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+    options: {
+      A: `their`,
+      B: `they’re`,
+      C: `its`,
+      D: `it’s`
+    },
+    answer: "C",
+    img: null,
+    stemImg: null
+  }
+];
+
+let currentQ = 0;
+let answerShown = false;
+let attempted = Array(questions.length).fill(false);
+let userAnswers = Array(questions.length).fill(null);
+
+/* ---------- TEXT NORMALIZERS ---------- */
+
+/* For short single-line fields like stem: trim + kill extra whitespace. */
+function normalizeInline(s) {
+  return (s ?? "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+/* For passages: remove indentation; keep paragraph breaks only.
+   - Collapses single newlines into spaces (fixes unwanted line breaks)
+   - Preserves real paragraph breaks (2+ newlines) as <br><br>
+   - Leaves any existing <br> tags in your passage strings untouched
+*/
+function normalizePassageHTML(s) {
+  let t = (s ?? "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n[ \t]+/g, "\n")
+    .trim();
+
+  // Mark paragraph breaks (2+ newlines)
+  t = t.replace(/\n{2,}/g, "<<<P>>>");
+
+  // Collapse remaining single newlines into spaces
+  t = t.replace(/\n/g, " ");
+
+  // Clean spacing
+  t = t.replace(/[ \t]{2,}/g, " ").trim();
+
+  // Restore paragraphs
+  t = t.replace(/<<<P>>>/g, "<br><br>");
+
+  return t;
+}
+
+function setButtonsEnabled(enabled){
+  ["answerBtn","prevBtn","nextBtn","reviewBtn"].forEach(id=>{
+    const b=document.getElementById(id);
+    b.disabled=!enabled;
+    b.style.opacity=enabled?'1':'0.6';
+    b.style.cursor=enabled?'pointer':'not-allowed';
+  });
+}
+
+function loadQuestion() {
+  if (questions.length === 0) {
+    document.getElementById('passage').innerHTML = 'No questions added yet.';
+    document.getElementById('qnumBox').innerText = '—';
+    document.getElementById('stem').innerText = '';
+    document.getElementById('options').innerHTML = '';
+    document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+    answerShown = false;
+    updateQpanel();
+    setButtonsEnabled(false);
+    return;
+  }
+
+  setButtonsEnabled(true);
+
+  const q = questions[currentQ];
+
+  const passageHTML = normalizePassageHTML(q.passage);
+  document.getElementById('passage').innerHTML =
+    (q.img ? `<img src="${q.img}" alt="Image" style="max-width:100%; margin-bottom:10px;"><br>` : '') + passageHTML;
+
+  document.getElementById('qnumBox').innerText = `Q${q.num}`;
+  document.getElementById('stem').innerText = normalizeInline(q.stem || "");
+
+  const optionsDiv = document.getElementById('options');
+  optionsDiv.innerHTML = '';
+
+  for (const [key, val] of Object.entries(q.options)) {
+    const lbl = document.createElement('label');
+    lbl.innerHTML = `<input type="radio" name="option" value="${key}"> ${key}. ${val}`;
+    const input = lbl.querySelector('input');
+
+    if (userAnswers[currentQ] === key) input.checked = true;
+
+    input.addEventListener('change', () => {
+      userAnswers[currentQ] = key;
+      attempted[currentQ] = true;
+      updateQpanel();
+    });
+
+    optionsDiv.appendChild(lbl);
+  }
+
+  answerShown = false;
+  document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+  updateQpanel();
+}
+
+function toggleAnswer() {
+  const q = questions[currentQ];
+  const optionsDiv = document.getElementById('options');
+
+  if (!answerShown){
+    for (const input of optionsDiv.querySelectorAll('input')){
+      input.parentNode.classList.remove('correct','incorrect');
+      if (input.value===q.answer) input.parentNode.classList.add('correct');
+      else input.parentNode.classList.add('incorrect');
+    }
+    document.getElementById('answerBtn').innerText = 'Hide Correct Answer';
+    answerShown = true;
+  } else {
+    for (const input of optionsDiv.querySelectorAll('input')){
+      input.parentNode.classList.remove('correct','incorrect');
+    }
+    document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+    answerShown = false;
+  }
+}
+
+document.getElementById('answerBtn').addEventListener('click', toggleAnswer);
+document.getElementById('prevBtn').addEventListener('click', () => { if(currentQ>0) currentQ--; loadQuestion(); });
+document.getElementById('nextBtn').addEventListener('click', () => { if(currentQ<questions.length-1) currentQ++; loadQuestion(); });
+
+const collapsed = document.getElementById('qpanelCollapsed');
+const expanded = document.getElementById('qpanelExpanded');
+collapsed.addEventListener('click', () => { expanded.style.display = expanded.style.display==='block'?'none':'block'; });
+
+function updateQpanel(){
+  const grid = document.getElementById('qgrid');
+  grid.innerHTML = '';
+
+  questions.forEach((q,i)=>{
+    const b = document.createElement('div');
+    b.innerText = q.num;
+    b.className='qnum-box';
+    b.classList.toggle('attempted', attempted[i]);
+    b.addEventListener('click',()=>{ currentQ=i; loadQuestion(); expanded.style.display='none'; });
+    grid.appendChild(b);
+  });
+
+  document.getElementById('currentQuestionLabel').innerText =
+    `Question ${questions[currentQ].num} of ${questions.length}`;
+}
+
+loadQuestion();
+
+/* Review page */
+document.getElementById('reviewBtn').addEventListener('click', () => {
+  const mainContent = document.querySelector('.container');
+  const bottomBar = document.querySelector('.bottom-bar');
+  const qpanel = document.getElementById('qpanel');
+  mainContent.style.display = 'none';
+  bottomBar.style.display = 'none';
+  qpanel.style.display = 'none';
+
+  let reviewDiv = document.getElementById('reviewPage');
+  if (!reviewDiv) {
+    reviewDiv = document.createElement('div');
+    reviewDiv.id = 'reviewPage';
+    reviewDiv.style.padding = '20px';
+    reviewDiv.style.maxWidth = '600px';
+    reviewDiv.style.margin = '0 auto';
+    document.body.appendChild(reviewDiv);
+  }
+  reviewDiv.style.display = 'block';
+  reviewDiv.innerHTML = '<h2>Review Questions</h2>';
+
+  const correctCount = userAnswers.filter((ans, idx) => ans === questions[idx].answer).length;
+  const totalCount = questions.length;
+
+  const scoreDiv = document.createElement('div');
+  scoreDiv.style.fontWeight = 'bold';
+  scoreDiv.style.marginBottom = '15px';
+  scoreDiv.innerText = `Score: ${correctCount} / ${totalCount}`;
+  reviewDiv.appendChild(scoreDiv);
+
+  const ul = document.createElement('ul');
+  ul.style.listStyle = 'none';
+  ul.style.padding = '0';
+  ul.style.display = 'flex';
+  ul.style.flexWrap = 'wrap';
+  ul.style.gap = '8px';
+
+  questions.forEach((q,i)=>{
+    const li = document.createElement('li');
+    li.innerText = q.num;
+    li.style.padding='8px 12px';
+    li.style.border='1px solid #333';
+    li.style.borderRadius='4px';
+    li.style.cursor='pointer';
+
+    if (userAnswers[i] === null) li.style.background = '#555';
+    else if (userAnswers[i] === q.answer) li.style.background = '#28a745';
+    else li.style.background = '#dc3545';
+    li.style.color='#fff';
+
+    li.addEventListener('click', () => {
+      currentQ = i;
+      loadQuestion();
+      reviewDiv.style.display = 'none';
+      mainContent.style.display = 'flex';
+      bottomBar.style.display = 'flex';
+      qpanel.style.display = 'block';
+    });
+
+    ul.appendChild(li);
+  });
+
+  reviewDiv.appendChild(ul);
+
+  let backBtn = document.getElementById('backToTestBtn');
+  if (!backBtn) {
+    backBtn = document.createElement('button');
+    backBtn.id = 'backToTestBtn';
+    backBtn.innerText = 'Back to Test';
+    backBtn.style.background='#556d98';
+    backBtn.style.color='#fff';
+    backBtn.style.border='none';
+    backBtn.style.padding='10px 20px';
+    backBtn.style.marginTop='20px';
+    backBtn.style.borderRadius='4px';
+    backBtn.style.cursor='pointer';
+    reviewDiv.appendChild(backBtn);
+  }
+  backBtn.onclick = () => {
+    reviewDiv.style.display = 'none';
+    mainContent.style.display = 'flex';
+    bottomBar.style.display = 'flex';
+    qpanel.style.display = 'block';
+  };
+});
+</script>
+
+</body>
+</html>
