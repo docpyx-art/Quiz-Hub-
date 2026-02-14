@@ -5,219 +5,187 @@
 <title>Verbal – Set 10</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #fff;
-  padding-bottom: 100px;
+body { margin:0; font-family:Arial,sans-serif; background:#fff; }
+
+/* ✅ Top bar (flex) like Set 8 so title never gets covered */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  border-bottom:1px solid #ccc;
+  font-weight:bold;
+}
+.top-left{ display:flex; align-items:center; gap:12px; }
+.top-right{ display:flex; align-items:center; gap:10px; }
+
+.test-btn{
+  padding:6px 12px;
+  font-size:14px;
+  border-radius:4px;
+  border:1px solid #ff6f61;
+  background:#fff;
+  color:#ff6f61;
+  cursor:pointer;
 }
 
-.top-bar {
-  padding: 12px 20px;
-  border-bottom: 1px solid #ccc;
-  font-weight: bold;
+/* ✅ Keep verbal 2-column layout, but match Math spacing */
+.container{
+  display:flex;
+  flex-grow:1;
+  padding:20px;
+  padding-bottom:150px; /* ✅ space for bottom bar */
+  box-sizing:border-box;
+}
+.left, .right{
+  width:50%;
+  padding:30px;
+  box-sizing:border-box;
+}
+.divider{
+  width:1px;
+  background:#ccc;
+  height:calc(100vh - 60px);
 }
 
-.container {
-  display: flex;
-  flex-grow: 1;
+/* ✅ Left aligned */
+.passage{ font-size:16px; line-height:1.6; text-align:left; white-space:normal; }
+#stem{ text-align:left; margin-bottom:10px; }
+.options{ text-align:left; }
+
+.qbox{
+  display:inline-block;
+  padding:4px 8px;
+  width:auto;
+  text-align:center;
+  border:2px solid #000;
+  border-radius:4px;
+  font-weight:bold;
+  font-size:16px;
+  margin-bottom:35px;
 }
 
-.left, .right {
-  width: 50%;
-  padding: 30px;
-  box-sizing: border-box;
+.options label{ display:block; margin:10px 0; padding:6px; cursor:pointer; border-radius:4px; }
+.correct{ background:#d4edda; }
+.incorrect{ background:#f8d7da; }
+
+/* ✅ Darker radio dot */
+.options input[type="radio"]{
+  width:20px;
+  height:20px;
+  transform: translateY(4px);
+  accent-color:#000;
 }
 
-.divider {
-  width: 1px;
-  background: #ccc;
-  height: calc(100vh - 60px);
+/* ✅ Post-submit result bars (same as Set 8) */
+.resultText{ margin-top:10px; font-size:14px; line-height:1.6; }
+.resultLine{ display:inline-block; padding:4px 8px; border-radius:6px; margin:4px 0; }
+.yourAns{ background:#f8d7da; color:#000; font-weight:bold; }
+.correctAns{ background:#d4edda; color:#000; font-weight:bold; }
+
+/* Bottom bar fixed (same as Set 8) */
+.bottom-bar{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  width:100%;
+  background:#2f3e46;
+  padding:10px 20px;
+  position:fixed;
+  bottom:0; left:0;
+  box-sizing:border-box;
+  color:#fff;
+  gap:10px;
+  z-index:20;
 }
 
-/* ✅ TRUE LEFT ALIGN (no preserved indents) */
-.passage {
-  font-size: 16px;
-  line-height: 1.6;
-  text-align: left;
-  white-space: normal;
+button{ padding:9px 20px; border:none; cursor:pointer; border-radius:4px; color:#fff; font-weight:bold; }
+.btn-answer{ background:#3a5a98; }
+.btn-nav{ background:#556d98; }
+
+/* Question panel (same as Set 8) */
+.qpanelCollapsed{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  padding:6px 12px;
+  cursor:pointer;
+  background:#ff6f61;
+  color:#fff;
+  border-radius:4px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  z-index:21;
+  font-size:13px;
 }
-
-#stem {
-  text-align: left;
-  margin-bottom: 10px;
+.qpanelExpanded{
+  display:none;
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px;
+  border-radius:6px;
+  background:#1a1a1a;
+  color:#fff;
+  max-width:800px;
+  overflow-y:auto;
+  font-size:14px;
+  text-align:center;
+  z-index:20;
+  max-height:300px;
 }
+.qgrid{ display:grid; grid-template-columns:repeat(8,1fr); gap:6px; justify-content:center; margin-top:5px; }
+.qnum-box{ padding:8px; text-align:center; cursor:pointer; border-radius:4px; background:#333; color:#fff; font-weight:bold; }
+.qnum-box.attempted{ background:#ff6f61; color:#fff; }
+.qnum-box:hover{ opacity:0.8; }
 
-.options {
-  text-align: left;
-}
+/* locked look */
+.locked{ opacity:0.65; pointer-events:none; }
 
-.qbox {
-  padding: 6px 14px;
-  border: 2px solid #000;
-  display: inline-block;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.options label {
-  display: block;
-  margin: 10px 0;
-  padding: 6px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.correct { background: #d4edda; }
-.incorrect { background: #f8d7da; }
-
-/* Bottom bar */
-.bottom-bar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  background: #2f3e46;
-  padding: 10px 20px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
-  color: #fff;
-  gap: 10px;
-}
-
-button {
-  padding: 9px 20px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  color: #fff;
-  font-weight: bold;
-}
-
-.btn-answer { background: #3a5a98; }
-.btn-nav { background: #556d98; }
-
-/* Question panel */
-.qpanelCollapsed {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 6px 12px;
-  cursor: pointer;
-  background: #ff6f61;
-  color: #fff;
-  border-radius: 4px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  z-index: 11;
-  font-size: 13px;
-}
-
-.qpanelExpanded {
-  display: none;
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px;
-  border-radius: 6px;
-  background: #1a1a1a;
-  color: #fff;
-  max-width: 800px;
-  overflow-y: auto;
-  font-size: 14px;
-  text-align: center;
-  z-index: 10;
-  max-height: 300px;
-}
-
-.qgrid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 6px;
-  justify-content: center;
-  margin-top: 5px;
-}
-
-.qnum-box {
-  padding: 8px;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 4px;
-  background: #333;
-  color: #fff;
-  font-weight: bold;
-}
-
-.qnum-box.attempted { background: #ff6f61; }
-.qnum-box:hover { opacity: 0.8; }
-
-/* Mobile */
+/* Mobile (same behavior as Set 8) */
 @media (max-width: 768px) {
-  body { padding-bottom: 180px; }
-  .container { flex-direction: column; }
-  .left, .right { width: 100%; padding: 15px; }
-  .divider { display: none; }
+  .container{ flex-direction:column; padding-bottom:190px; }
+  .left, .right{ width:100%; padding:15px; }
+  .divider{ display:none; }
 
-  .bottom-bar {
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px;
-  }
+  .passage{ font-size:15px; margin-bottom:15px; }
+  #stem{ font-size:15px; margin-bottom:10px; }
+  #options label{ font-size:14px; }
 
-  .btn-answer, .btn-nav {
-    width: 100%;
-    text-align: center;
-  }
+  .bottom-bar{ flex-direction:column; gap:8px; }
+  .btn-answer, .btn-nav{ width:100%; text-align:center; }
 
-  .qpanelCollapsed {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
+  .qpanelCollapsed{ font-size:12px; padding:5px 10px; }
+  .qpanelExpanded{ max-height:250px; font-size:13px; padding:8px; }
+  .qgrid{ grid-template-columns:repeat(4,1fr); gap:4px; }
+  .qnum-box{ padding:6px; font-size:12px; }
 
-  .qpanelExpanded {
-    max-height: 250px;
-    font-size: 13px;
-    padding: 8px;
-  }
-
-  .qgrid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
-  .qnum-box { padding: 6px; font-size: 12px; }
-
-  .passage { font-size: 15px; }
-  #stem { font-size: 15px; }
-  #options label { font-size: 14px; }
-
-  img { max-width: 100%; height: auto; }
+  img{ max-width:100%; height:auto; }
 }
-
 @media only screen and (max-width: 600px) {
-  .container { flex-direction: column; }
-  .left, .right { width: 100%; padding: 20px; }
-  .divider { display: none; }
-
-  .bottom-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  #qpanelCollapsed { left: 10px; bottom: 80px; transform: none; font-size: 12px; }
-  #qpanelExpanded  { left: 10px; bottom: 120px; transform: none; max-width: calc(100% - 20px); font-size: 13px; max-height: 250px; }
-
-  .qgrid { grid-template-columns: repeat(4, 1fr); }
-  .qnum-box { padding: 6px; font-size: 12px; }
+  .bottom-bar{ flex-direction:column; align-items:stretch; gap:8px; }
+  #qpanelCollapsed{ left:10px; bottom:80px; transform:none; font-size:12px; }
+  #qpanelExpanded{ left:10px; bottom:120px; transform:none; max-width:calc(100% - 20px); font-size:13px; max-height:250px; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="top-bar">Verbal – Set 10</div>
+<div class="top-bar">
+  <div class="top-left">
+    <button id="testModeBtn" class="test-btn">Test Mode: OFF</button>
+  </div>
+
+  <div class="top-title">Verbal – Set 10</div>
+
+  <div class="top-right">
+    <!-- empty to keep title centered -->
+  </div>
+</div>
 
 <div class="container">
   <div class="left">
@@ -230,6 +198,7 @@ button {
     <div id="qnumBox" class="qbox"></div>
     <div id="stem"></div>
     <div id="options" class="options"></div>
+    <div id="resultText" class="resultText" style="display:none;"></div>
   </div>
 </div>
 
@@ -242,7 +211,7 @@ button {
 
 <div id="qpanel">
   <div id="qpanelCollapsed" class="qpanelCollapsed">
-    <span id="currentQuestionLabel">Question 0 of 0</span>
+    <span id="currentQuestionLabel">Question</span>
     <span id="toggleArrow" style="margin-left:6px;">▲</span>
   </div>
   <div id="qpanelExpanded" class="qpanelExpanded">
@@ -251,6 +220,7 @@ button {
 </div>
 
 <script>
+// ==== QUESTIONS (Verbal Set 10) ====
 const questions = [
   {
     num: 283,
@@ -261,17 +231,10 @@ a high incidence in English, for example, an analysis of a corpus can support th
 fifth most commonly used verb.
 `,
     stem: `Which choice completes the text with the most logical and precise word or phrase?`,
-    options: {
-      A: `recognition`,
-      B: `scheme`,
-      C: `supposition`,
-      D: `synopsis`
-    },
+    options: { A:`recognition`, B:`scheme`, C:`supposition`, D:`synopsis` },
     answer: "C",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 284,
     passage: `
@@ -289,16 +252,14 @@ innovators can be difficult to trace.
 `,
     stem: `Based on the texts, how would the author of Text 1 most likely respond to the discussion in Text 2?`,
     options: {
-      A: `By recommending that the scholars mentioned in Text 2 consider employing the methods regularly used by film and television researchers`,
-      B: `By pointing out that credits have a different intended purpose in film and television than in the medium addressed by the scholars mentioned in Text 2`,
-      C: `By suggesting that the scholars mentioned in Text 2 rely more heavily on credits as a source of information than film and television researchers do`,
-      D: `By observing that a widespread practice in film and television largely prevents the kind of problem faced by the scholars mentioned in Text 2`
+      A:`By recommending that the scholars mentioned in Text 2 consider employing the methods regularly used by film and television researchers`,
+      B:`By pointing out that credits have a different intended purpose in film and television than in the medium addressed by the scholars mentioned in Text 2`,
+      C:`By suggesting that the scholars mentioned in Text 2 rely more heavily on credits as a source of information than film and television researchers do`,
+      D:`By observing that a widespread practice in film and television largely prevents the kind of problem faced by the scholars mentioned in Text 2`
     },
     answer: "D",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 285,
     passage: `
@@ -308,17 +269,10 @@ photography as an emerging medium for fine art: in the essay, Eastlake ______ th
 informational rather than creative.
 `,
     stem: `Which choice completes the text with the most logical and precise word or phrase?`,
-    options: {
-      A: `exposed`,
-      B: `asserted`,
-      C: `discovered`,
-      D: `doubted`
-    },
+    options: { A:`exposed`, B:`asserted`, C:`discovered`, D:`doubted` },
     answer: "B",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 286,
     passage: `
@@ -326,19 +280,11 @@ informational rather than creative.
 showing the California county’s farms, residences, and businesses. It was ______ for a business to be featured, since
 being included suggested that a business was an important part of the community.
 `,
-
     stem: `Which choice completes the text with the most logical and precise word or phrase?`,
-    options: {
-      A: `risky`,
-      B: `misleading`,
-      C: `advantageous`,
-      D: `unremarkable`
-    },
+    options: { A:`risky`, B:`misleading`, C:`advantageous`, D:`unremarkable` },
     answer: "C",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 287,
     passage: `
@@ -352,16 +298,14 @@ While researching a topic, a student has taken the following notes:
 `,
     stem: `The student wants to present the study’s results. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
     options: {
-      A: `Macaques in the study called out to and gestured more frequently at humans holding food than at empty-handed humans.`,
-      B: `In 2018, researchers who had observed macaques in India’s Bandipur National Park calling out to and gesturing at humans designed a study.`,
-      C: `The researchers hoped to find out if the macaques were intentionally communicating to try to persuade humans to share their food.`,
-      D: `The researchers studied how macaques behaved around both humans holding food and empty-handed humans.`
+      A:`Macaques in the study called out to and gestured more frequently at humans holding food than at empty-handed humans.`,
+      B:`In 2018, researchers who had observed macaques in India’s Bandipur National Park calling out to and gesturing at humans designed a study.`,
+      C:`The researchers hoped to find out if the macaques were intentionally communicating to try to persuade humans to share their food.`,
+      D:`The researchers studied how macaques behaved around both humans holding food and empty-handed humans.`
     },
     answer: "A",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 288,
     passage: `
@@ -375,16 +319,14 @@ While researching a topic, a student has taken the following notes:
 `,
     stem: `The student wants to use a quotation to emphasize a potential problem with the wood-wide web theory. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
     options: {
-      A: `Describing trees as “super-cooperators,” Simard first suggested that trees can exchange resources with one another in 1997.`,
-      B: `In “The Decay of the Wood-Wide Web?,” Karst and colleagues note that common mycorrhizal networks “have captured the interest of broad audiences.”`,
-      C: `After evaluating dozens of CMN studies, Karst and colleagues expressed concern that recent claims about common mycorrhizal networks are “disconnected from evidence.”`,
-      D: `Despite the concerns expressed in the 2022 study “The Decay of the Wood-Wide Web?,” the wood-wide web theory remains popular.`
+      A:`Describing trees as “super-cooperators,” Simard first suggested that trees can exchange resources with one another in 1997.`,
+      B:`In “The Decay of the Wood-Wide Web?,” Karst and colleagues note that common mycorrhizal networks “have captured the interest of broad audiences.”`,
+      C:`After evaluating dozens of CMN studies, Karst and colleagues expressed concern that recent claims about common mycorrhizal networks are “disconnected from evidence.”`,
+      D:`Despite the concerns expressed in the 2022 study “The Decay of the Wood-Wide Web?,” the wood-wide web theory remains popular.`
     },
     answer: "C",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 289,
     passage: `
@@ -393,17 +335,10 @@ may look similar from afar. Tehnuka Ilanko and other volcanologists, ______ can 
 Hverfjall is a cinder cone volcano, while Toliman is a composite volcano.
 `,
     stem: `Which choice completes the text with the most logical transition?`,
-    options: {
-      A: `for example,`,
-      B: `in addition,`,
-      C: `therefore,`,
-      D: `though,`
-    },
+    options: { A:`for example,`, B:`in addition,`, C:`therefore,`, D:`though,` },
     answer: "D",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 290,
     passage: `
@@ -417,16 +352,14 @@ While researching a topic, a student has taken the following notes:
 `,
     stem: `The student wants to present historical analysis to an audience unfamiliar with the concept. Which choice most effectively uses relevant information from the notes to accomplish this goal?`,
     options: {
-      A: `A texture analysis of Youth Holding an Arrow might consider how the painting’s blended colors make the subject’s skin appear smooth in texture.`,
-      B: `Texture analysis differs from historical analysis in that texture analysis examines how surfaces are visually represented in an artwork.`,
-      C: `An approach to art criticism, historical analysis considers the historical context in which a work was created.`,
-      D: `Las Meninas’s depiction of the artist with King Philip IV symbolizes art’s historical ties to power.`
+      A:`A texture analysis of Youth Holding an Arrow might consider how the painting’s blended colors make the subject’s skin appear smooth in texture.`,
+      B:`Texture analysis differs from historical analysis in that texture analysis examines how surfaces are visually represented in an artwork.`,
+      C:`An approach to art criticism, historical analysis considers the historical context in which a work was created.`,
+      D:`Las Meninas’s depiction of the artist with King Philip IV symbolizes art’s historical ties to power.`
     },
     answer: "C",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 291,
     passage: `
@@ -436,16 +369,14 @@ using their arms for balance while they reached for fruits. These observations m
 `,
     stem: `Which choice most logically completes the text?`,
     options: {
-      A: `bipedalism evolved because it was advantageous to a tree-dwelling ancestor of humans.`,
-      B: `bipedalism must have evolved simultaneously with knuckle-walking and tree-climbing.`,
-      C: `moving between the ground and the trees would have been difficult without bipedalism.`,
-      D: `a knuckle-walking human ancestor could have easily moved bipedally in trees.`
+      A:`bipedalism evolved because it was advantageous to a tree-dwelling ancestor of humans.`,
+      B:`bipedalism must have evolved simultaneously with knuckle-walking and tree-climbing.`,
+      C:`moving between the ground and the trees would have been difficult without bipedalism.`,
+      D:`a knuckle-walking human ancestor could have easily moved bipedally in trees.`
     },
     answer: "A",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 292,
     passage: `
@@ -458,37 +389,33 @@ distinct traditions by reducing them all to a single category.
 `,
     stem: `Which finding about mbaqanga and quan họ, if true, would most directly support Zheng’s claim?`,
     options: {
-      A: `Mbaqanga and quan họ developed independently of each other and have little in common musically.`,
-      B: `Mbaqanga is significantly more popular in the English-speaking world than quan họ is.`,
-      C: `Mbaqanga and quan họ are now performed by a diverse array of musicians with no direct connections to South Africa or Vietnam.`,
-      D: `Mbaqanga and quan họ are highly distinct from British and North American popular music genres but similar to each other.`
+      A:`Mbaqanga and quan họ developed independently of each other and have little in common musically.`,
+      B:`Mbaqanga is significantly more popular in the English-speaking world than quan họ is.`,
+      C:`Mbaqanga and quan họ are now performed by a diverse array of musicians with no direct connections to South Africa or Vietnam.`,
+      D:`Mbaqanga and quan họ are highly distinct from British and North American popular music genres but similar to each other.`
     },
     answer: "A",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
-  num: 293,
-  passage: `
+    num: 293,
+    passage: `
 It has been hypothesized that since birds can dissipate excess heat through their bills, bill size should increase with
 habitat temperature. To evaluate this hypothesis for a 2021 study, Charlotte Probst and colleagues gathered data on
 mean bill surface area of species of North American thrashers (genus: Toxostoma) as well as on climate conditions of
 the birds’ native habitats. Based on their data, Probst and colleagues concluded that the hypothesis was not fully
 supported.
 `,
-  stem: `Which choice most effectively uses data from the table to support Probst and colleagues’ conclusion?`,
-  options: {
-    A: `Although the Bendire’s thrasher has one of the smallest mean bill surface areas of the birds included in the table, its habitat has one of the lowest mean maximum temperatures in the warmest month and one of the lowest mean minimum temperatures in the coldest month.`,
-    B: `Although the Cozumel thrasher has the second greatest mean bill surface area of the birds included in the table, its habitat’s mean temperature in the warmest month is significantly higher than that of the other birds’ habitats.`,
-    C: `Of the birds included in the table, the brown thrasher has the smallest mean bill surface area and the habitat with the lowest mean minimum temperature in the coldest month, while the long-billed thrasher has the second-largest mean bill surface area and the habitat with the second-highest mean minimum temperature in the coldest month.`,
-    D: `Of the birds included in the table, the ocellated thrasher has the largest mean bill surface area and the habitat with the lowest mean maximum temperature in the warmest month, while the Bendire’s thrasher has the second smallest mean bill surface area and the habitat with the highest mean maximum temperature in the warmest month.`
+    stem: `Which choice most effectively uses data from the table to support Probst and colleagues’ conclusion?`,
+    options: {
+      A:`Although the Bendire’s thrasher has one of the smallest mean bill surface areas of the birds included in the table, its habitat has one of the lowest mean maximum temperatures in the warmest month and one of the lowest mean minimum temperatures in the coldest month.`,
+      B:`Although the Cozumel thrasher has the second greatest mean bill surface area of the birds included in the table, its habitat’s mean temperature in the warmest month is significantly higher than that of the other birds’ habitats.`,
+      C:`Of the birds included in the table, the brown thrasher has the smallest mean bill surface area and the habitat with the lowest mean minimum temperature in the coldest month, while the long-billed thrasher has the second-largest mean bill surface area and the habitat with the second-highest mean minimum temperature in the coldest month.`,
+      D:`Of the birds included in the table, the ocellated thrasher has the largest mean bill surface area and the habitat with the lowest mean maximum temperature in the warmest month, while the Bendire’s thrasher has the second smallest mean bill surface area and the habitat with the highest mean maximum temperature in the warmest month.`
+    },
+    answer: "D",
+    img: "293.png"
   },
-  answer: "D",
-  img: "293.png"
-},
-
-
   {
     num: 294,
     passage: `
@@ -497,16 +424,14 @@ Mr. Cornelius Johnson’s appearance as conveying his exaggerated sense of his i
 `,
     stem: `Which quotation from “Mr. Cornelius Johnson, Office-Seeker” most effectively illustrates the claim?`,
     options: {
-      A: `“He carried himself always as if he were passing under his own triumphal arch.”`,
-      B: `“The grey Prince Albert was scrupulously buttoned about his form, and a shiny top hat replaced the felt of the afternoon.”`,
-      C: `“It was a beautiful day in balmy May and the sun shone pleasantly on Mr. Cornelius Johnson’s very spruce Prince Albert suit of grey as he alighted from the train in Washington.”`,
-      D: `“Mr. Cornelius Johnson always spoke in a large and important tone.”`
+      A:`“He carried himself always as if he were passing under his own triumphal arch.”`,
+      B:`“The grey Prince Albert was scrupulously buttoned about his form, and a shiny top hat replaced the felt of the afternoon.”`,
+      C:`“It was a beautiful day in balmy May and the sun shone pleasantly on Mr. Cornelius Johnson’s very spruce Prince Albert suit of grey as he alighted from the train in Washington.”`,
+      D:`“Mr. Cornelius Johnson always spoke in a large and important tone.”`
     },
     answer: "A",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 295,
     passage: `
@@ -515,16 +440,14 @@ fungi, lichens, and cyanobacteria. Fortifying soil in arid ecosystems against er
 `,
     stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
     options: {
-      A: `a recent study’s estimate is that these crusts reduce global dust emissions by 60 percent each year.`,
-      B: `an estimated 60 percent reduction in global dust emissions each year is due to these crusts, according to a recent study.`,
-      C: `these crusts reduce global dust emissions by an estimated 60 percent each year, according to a recent study.`,
-      D: `a recent study has estimated that these crusts reduce global dust emissions by 60 percent each year.`
+      A:`a recent study’s estimate is that these crusts reduce global dust emissions by 60 percent each year.`,
+      B:`an estimated 60 percent reduction in global dust emissions each year is due to these crusts, according to a recent study.`,
+      C:`these crusts reduce global dust emissions by an estimated 60 percent each year, according to a recent study.`,
+      D:`a recent study has estimated that these crusts reduce global dust emissions by 60 percent each year.`
     },
     answer: "C",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
     num: 296,
     passage: `
@@ -533,36 +456,26 @@ velocity, final velocity, and acceleration. These are called kinematic variables
 `,
     stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
     options: {
-      A: `variable’s that characterize objects’`,
-      B: `variables that characterize objects’`,
-      C: `variables that characterize object’s`,
-      D: `variables that characterize objects`
+      A:`variable’s that characterize objects’`,
+      B:`variables that characterize objects’`,
+      C:`variables that characterize object’s`,
+      D:`variables that characterize objects`
     },
     answer: "B",
-    img: null,
-    stemImg: null
+    img: null
   },
-
   {
-  num: 297,
-  passage: `
+    num: 297,
+    passage: `
 In 1727, dramatist Lewis Theobald presented a new play, <i>Double Falsehood</i>, at a London theater. Theobald claimed that
 his drama was based on a little-known play by William Shakespeare, <i>Cardenio</i>. Many, including poet Alexander Pope, were
 ______ historians have determined that Shakespeare’s company did perform a play called <i>Cardenio</i> in 1613.
 `,
-  stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
-  options: {
-    A: `skeptical but`,
-    B: `skeptical, but`,
-    C: `skeptical,`,
-    D: `skeptical`
+    stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
+    options: { A:`skeptical but`, B:`skeptical, but`, C:`skeptical,`, D:`skeptical` },
+    answer: "B",
+    img: null
   },
-  answer: "B",
-  img: null,
-  stemImg: null
-},
-
-
   {
     num: 298,
     passage: `
@@ -571,71 +484,87 @@ will even find faces in clouds, wooden doors, pieces of fruit, and other faceles
 Magsamen has focused her work on better understanding this everyday phenomenon.
 `,
     stem: `Which choice completes the text so that it conforms to the conventions of Standard English?`,
-    options: {
-      A: `she`,
-      B: `they`,
-      C: `it`,
-      D: `those`
-    },
+    options: { A:`she`, B:`they`, C:`it`, D:`those` },
     answer: "C",
-    img: null,
-    stemImg: null
+    img: null
   }
 ];
 
+// ==== STATE (same as Set 8) ====
 let currentQ = 0;
 let answerShown = false;
 let attempted = Array(questions.length).fill(false);
 let userAnswers = Array(questions.length).fill(null);
 
-/* ---------- TEXT NORMALIZERS ---------- */
+/* Test mode state */
+let isTestMode = false;
+let isSubmitted = false;
 
-/* For short single-line fields like stem: trim + kill extra whitespace. */
-function normalizeInline(s) {
+function isAttemptLocked(){ return isTestMode && isSubmitted; }
+
+// ---------- Normalizers (keeps your “true left align” clean) ----------
+function normalizeInline(s){
   return (s ?? "")
-    .replace(/\r\n/g, "\n")
-    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\r\n/g,"\n")
+    .replace(/\n[ \t]+/g,"\n")
     .trim()
-    .replace(/\s+/g, " ");
+    .replace(/\s+/g," ");
 }
 
-/* For passages: remove indentation; keep paragraph breaks only.
-   - Collapses single newlines into spaces (fixes unwanted line breaks)
-   - Preserves real paragraph breaks (2+ newlines) as <br><br>
-   - Leaves any existing <br> tags in your passage strings untouched
-*/
-function normalizePassageHTML(s) {
+/* Keeps <br> from your strings; removes indentation/newline weirdness */
+function normalizePassageHTML(s){
   let t = (s ?? "")
-    .replace(/\r\n/g, "\n")
-    .replace(/\n[ \t]+/g, "\n")
+    .replace(/\r\n/g,"\n")
+    .replace(/\n[ \t]+/g,"\n")
     .trim();
 
-  // Mark paragraph breaks (2+ newlines)
-  t = t.replace(/\n{2,}/g, "<<<P>>>");
+  // mark paragraph breaks
+  t = t.replace(/\n{2,}/g,"<<<P>>>");
 
-  // Collapse remaining single newlines into spaces
-  t = t.replace(/\n/g, " ");
+  // collapse single newlines
+  t = t.replace(/\n/g," ");
 
-  // Clean spacing
-  t = t.replace(/[ \t]{2,}/g, " ").trim();
+  // clean spacing
+  t = t.replace(/[ \t]{2,}/g," ").trim();
 
-  // Restore paragraphs
-  t = t.replace(/<<<P>>>/g, "<br><br>");
-
+  // restore paragraph breaks
+  t = t.replace(/<<<P>>>/g,"<br><br>");
   return t;
 }
 
-function setButtonsEnabled(enabled){
-  ["answerBtn","prevBtn","nextBtn","reviewBtn"].forEach(id=>{
-    const b=document.getElementById(id);
-    b.disabled=!enabled;
-    b.style.opacity=enabled?'1':'0.6';
-    b.style.cursor=enabled?'pointer':'not-allowed';
-  });
+function updateModeUI(){
+  const answerBtn = document.getElementById('answerBtn');
+  const reviewBtn = document.getElementById('reviewBtn');
+
+  if(isTestMode && !isSubmitted){
+    answerBtn.style.display = 'none';
+    reviewBtn.innerText = 'Final Submit';
+  } else {
+    answerBtn.style.display = 'inline-block';
+    reviewBtn.innerText = 'Go to Review';
+  }
 }
 
-function loadQuestion() {
-  if (questions.length === 0) {
+function renderResultText(){
+  const box = document.getElementById('resultText');
+  if(!(isTestMode && isSubmitted)){
+    box.style.display='none';
+    box.innerHTML='';
+    return;
+  }
+  const q = questions[currentQ];
+  const your = (userAnswers[currentQ] ?? '').toString().trim() || '-';
+  const correct = q.answer;
+
+  box.style.display='block';
+  box.innerHTML = `
+    <div class="resultLine yourAns">Your answer: ${your}</div><br>
+    <div class="resultLine correctAns">Correct answer: ${correct}</div>
+  `;
+}
+
+function loadQuestion(){
+  if(questions.length === 0){
     document.getElementById('passage').innerHTML = 'No questions added yet.';
     document.getElementById('qnumBox').innerText = '—';
     document.getElementById('stem').innerText = '';
@@ -643,17 +572,17 @@ function loadQuestion() {
     document.getElementById('answerBtn').innerText = 'Show Correct Answer';
     answerShown = false;
     updateQpanel();
-    setButtonsEnabled(false);
+    updateModeUI();
+    renderResultText();
     return;
   }
-
-  setButtonsEnabled(true);
 
   const q = questions[currentQ];
 
   const passageHTML = normalizePassageHTML(q.passage);
   document.getElementById('passage').innerHTML =
-    (q.img ? `<img src="${q.img}" alt="Graph" style="max-width:100%; margin-bottom:10px;"><br>` : '') + passageHTML;
+    (q.img ? `<img src="${q.img}" alt="Graph" style="max-width:400px; width:100%; height:auto; display:block; margin-bottom:12px;">` : '')
+    + passageHTML;
 
   document.getElementById('qnumBox').innerText = `Q${q.num}`;
   document.getElementById('stem').innerText = normalizeInline(q.stem || "");
@@ -661,41 +590,54 @@ function loadQuestion() {
   const optionsDiv = document.getElementById('options');
   optionsDiv.innerHTML = '';
 
-  for (const [key, val] of Object.entries(q.options)) {
+  for(const [key,val] of Object.entries(q.options)){
     const lbl = document.createElement('label');
     lbl.innerHTML = `<input type="radio" name="option" value="${key}"> ${key}. ${val}`;
     const input = lbl.querySelector('input');
 
-    if (userAnswers[currentQ] === key) input.checked = true;
+    if(userAnswers[currentQ] === key) input.checked = true;
 
-    input.addEventListener('change', () => {
+    input.addEventListener('change', ()=>{
+      if(isAttemptLocked()) return;
       userAnswers[currentQ] = key;
       attempted[currentQ] = true;
       updateQpanel();
+      renderResultText();
     });
+
+    if(isAttemptLocked()){
+      input.disabled = true;
+      lbl.classList.add('locked');
+    }
 
     optionsDiv.appendChild(lbl);
   }
 
   answerShown = false;
   document.getElementById('answerBtn').innerText = 'Show Correct Answer';
+
   updateQpanel();
+  updateModeUI();
+  renderResultText();
 }
 
-function toggleAnswer() {
+function toggleAnswer(){
+  if(isTestMode && !isSubmitted) return;
+  if(questions.length === 0) return;
+
   const q = questions[currentQ];
   const optionsDiv = document.getElementById('options');
 
-  if (!answerShown){
-    for (const input of optionsDiv.querySelectorAll('input')){
+  if(!answerShown){
+    for(const input of optionsDiv.querySelectorAll('input[type="radio"]')){
       input.parentNode.classList.remove('correct','incorrect');
-      if (input.value===q.answer) input.parentNode.classList.add('correct');
+      if(input.value === q.answer) input.parentNode.classList.add('correct');
       else input.parentNode.classList.add('incorrect');
     }
     document.getElementById('answerBtn').innerText = 'Hide Correct Answer';
     answerShown = true;
   } else {
-    for (const input of optionsDiv.querySelectorAll('input')){
+    for(const input of optionsDiv.querySelectorAll('input[type="radio"]')){
       input.parentNode.classList.remove('correct','incorrect');
     }
     document.getElementById('answerBtn').innerText = 'Show Correct Answer';
@@ -704,43 +646,45 @@ function toggleAnswer() {
 }
 
 document.getElementById('answerBtn').addEventListener('click', toggleAnswer);
-document.getElementById('prevBtn').addEventListener('click', () => { if(currentQ>0) currentQ--; loadQuestion(); });
-document.getElementById('nextBtn').addEventListener('click', () => { if(currentQ<questions.length-1) currentQ++; loadQuestion(); });
+document.getElementById('prevBtn').addEventListener('click', ()=>{ if(currentQ>0) currentQ--; loadQuestion(); });
+document.getElementById('nextBtn').addEventListener('click', ()=>{ if(currentQ<questions.length-1) currentQ++; loadQuestion(); });
 
 const collapsed = document.getElementById('qpanelCollapsed');
-const expanded = document.getElementById('qpanelExpanded');
-collapsed.addEventListener('click', () => { expanded.style.display = expanded.style.display==='block'?'none':'block'; });
+const expanded  = document.getElementById('qpanelExpanded');
+collapsed.addEventListener('click', ()=>{ expanded.style.display = (expanded.style.display==='block')?'none':'block'; });
 
 function updateQpanel(){
   const grid = document.getElementById('qgrid');
   grid.innerHTML = '';
-
   questions.forEach((q,i)=>{
     const b = document.createElement('div');
     b.innerText = q.num;
-    b.className='qnum-box';
+    b.className = 'qnum-box';
     b.classList.toggle('attempted', attempted[i]);
-    b.addEventListener('click',()=>{ currentQ=i; loadQuestion(); expanded.style.display='none'; });
+    b.addEventListener('click', ()=>{ currentQ=i; loadQuestion(); expanded.style.display='none'; });
     grid.appendChild(b);
   });
-
   document.getElementById('currentQuestionLabel').innerText =
     `Question ${questions[currentQ].num} of ${questions.length}`;
 }
 
-loadQuestion();
+function isCorrectAnswer(idx, givenRaw){
+  const correct = (questions[idx].answer ?? '').toString().trim();
+  const given   = (givenRaw ?? '').toString().trim();
+  return !!given && given === correct;
+}
 
-/* Review page */
-document.getElementById('reviewBtn').addEventListener('click', () => {
+function openReviewPage(){
   const mainContent = document.querySelector('.container');
-  const bottomBar = document.querySelector('.bottom-bar');
-  const qpanel = document.getElementById('qpanel');
+  const bottomBar   = document.querySelector('.bottom-bar');
+  const qpanel      = document.getElementById('qpanel');
+
   mainContent.style.display = 'none';
-  bottomBar.style.display = 'none';
-  qpanel.style.display = 'none';
+  bottomBar.style.display   = 'none';
+  qpanel.style.display      = 'none';
 
   let reviewDiv = document.getElementById('reviewPage');
-  if (!reviewDiv) {
+  if(!reviewDiv){
     reviewDiv = document.createElement('div');
     reviewDiv.id = 'reviewPage';
     reviewDiv.style.padding = '20px';
@@ -751,7 +695,7 @@ document.getElementById('reviewBtn').addEventListener('click', () => {
   reviewDiv.style.display = 'block';
   reviewDiv.innerHTML = '<h2>Review Questions</h2>';
 
-  const correctCount = userAnswers.filter((ans, idx) => ans === questions[idx].answer).length;
+  const correctCount = userAnswers.filter((ans, idx)=> isCorrectAnswer(idx, ans)).length;
   const totalCount = questions.length;
 
   const scoreDiv = document.createElement('div');
@@ -761,11 +705,11 @@ document.getElementById('reviewBtn').addEventListener('click', () => {
   reviewDiv.appendChild(scoreDiv);
 
   const ul = document.createElement('ul');
-  ul.style.listStyle = 'none';
-  ul.style.padding = '0';
-  ul.style.display = 'flex';
-  ul.style.flexWrap = 'wrap';
-  ul.style.gap = '8px';
+  ul.style.listStyle='none';
+  ul.style.padding='0';
+  ul.style.display='flex';
+  ul.style.flexWrap='wrap';
+  ul.style.gap='8px';
 
   questions.forEach((q,i)=>{
     const li = document.createElement('li');
@@ -774,19 +718,20 @@ document.getElementById('reviewBtn').addEventListener('click', () => {
     li.style.border='1px solid #333';
     li.style.borderRadius='4px';
     li.style.cursor='pointer';
-
-    if (userAnswers[i] === null) li.style.background = '#555';
-    else if (userAnswers[i] === q.answer) li.style.background = '#28a745';
-    else li.style.background = '#dc3545';
     li.style.color='#fff';
 
-    li.addEventListener('click', () => {
+    const given = (userAnswers[i] ?? '').toString().trim();
+    if(!given) li.style.background = '#555';
+    else if(isCorrectAnswer(i, given)) li.style.background = '#28a745';
+    else li.style.background = '#dc3545';
+
+    li.addEventListener('click', ()=>{
       currentQ = i;
       loadQuestion();
-      reviewDiv.style.display = 'none';
-      mainContent.style.display = 'flex';
-      bottomBar.style.display = 'flex';
-      qpanel.style.display = 'block';
+      reviewDiv.style.display='none';
+      mainContent.style.display='flex';
+      bottomBar.style.display='flex';
+      qpanel.style.display='block';
     });
 
     ul.appendChild(li);
@@ -795,7 +740,7 @@ document.getElementById('reviewBtn').addEventListener('click', () => {
   reviewDiv.appendChild(ul);
 
   let backBtn = document.getElementById('backToTestBtn');
-  if (!backBtn) {
+  if(!backBtn){
     backBtn = document.createElement('button');
     backBtn.id = 'backToTestBtn';
     backBtn.innerText = 'Back to Test';
@@ -808,13 +753,87 @@ document.getElementById('reviewBtn').addEventListener('click', () => {
     backBtn.style.cursor='pointer';
     reviewDiv.appendChild(backBtn);
   }
-  backBtn.onclick = () => {
-    reviewDiv.style.display = 'none';
-    mainContent.style.display = 'flex';
-    bottomBar.style.display = 'flex';
-    qpanel.style.display = 'block';
+
+  backBtn.onclick = ()=>{
+    reviewDiv.style.display='none';
+    mainContent.style.display='flex';
+    bottomBar.style.display='flex';
+    qpanel.style.display='block';
+    loadQuestion(); // re-apply lock + result bars
   };
+}
+
+document.getElementById('reviewBtn').addEventListener('click', ()=>{
+  if(isTestMode && !isSubmitted){
+    const ok = confirm("Final Submit?\nAfter submission, answers will be locked.");
+    if(ok){
+      isSubmitted = true;
+      updateModeUI();
+      openReviewPage();
+    }
+    return;
+  }
+  openReviewPage();
 });
+
+document.getElementById('testModeBtn').addEventListener('click', ()=>{
+  if(!isTestMode){
+    isTestMode = true;
+    isSubmitted = false;
+
+    attempted = Array(questions.length).fill(false);
+    userAnswers = Array(questions.length).fill(null);
+    currentQ = 0;
+    answerShown = false;
+
+    document.getElementById('testModeBtn').innerText = 'Test Mode: ON';
+    alert("Test Mode is ON.\n- Correct answers hidden until Final Submit.\n- Review allowed only after Final Submit.\n- Fresh attempt started.");
+    updateModeUI();
+    loadQuestion();
+    return;
+  }
+
+  // if already submitted, allow restart attempt without turning off
+  if(isSubmitted){
+    const ok = confirm("Start a new test attempt? This will clear all your answers.");
+    if(ok){
+      isSubmitted = false;
+      attempted = Array(questions.length).fill(false);
+      userAnswers = Array(questions.length).fill(null);
+      currentQ = 0;
+      answerShown = false;
+
+      const reviewDiv = document.getElementById('reviewPage');
+      if(reviewDiv) reviewDiv.style.display = 'none';
+      document.querySelector('.container').style.display='flex';
+      document.querySelector('.bottom-bar').style.display='flex';
+      document.getElementById('qpanel').style.display='block';
+
+      updateModeUI();
+      loadQuestion();
+    }
+    return;
+  }
+
+  // turn OFF test mode (practice)
+  isTestMode = false;
+  isSubmitted = false;
+  document.getElementById('testModeBtn').innerText = 'Test Mode: OFF';
+
+  const reviewDiv = document.getElementById('reviewPage');
+  if(reviewDiv) reviewDiv.style.display = 'none';
+  document.querySelector('.container').style.display='flex';
+  document.querySelector('.bottom-bar').style.display='flex';
+  document.getElementById('qpanel').style.display='block';
+
+  updateModeUI();
+  loadQuestion();
+  alert("Test Mode is OFF.\nPractice Mode enabled.");
+});
+
+// init
+loadQuestion();
+updateModeUI();
 </script>
 
 </body>
